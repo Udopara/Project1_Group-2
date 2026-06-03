@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:formative_assignment1/theme/app_theme.dart';
-import 'package:formative_assignment1/ui/screen1.dart';
+import 'package:formative_assignment1/ui/screens/home_screen.dart';
+import 'package:formative_assignment1/ui/screens/explore_screen.dart';
+import 'package:formative_assignment1/ui/screens/create_screen.dart';
+import 'package:formative_assignment1/ui/screens/chats_screen.dart';
+import 'package:formative_assignment1/ui/screens/profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +18,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Formative Assignment 1',
       theme: AppTheme.light,
-      home: const Screen1(),
+      initialRoute: '/',
+      routes: {
+        '/':    (_) => const HomeScreen(),
+        '/explore': (_) => const ExploreScreen(),
+        '/create':  (_) => const CreateScreen(),
+        '/chats':   (_) => const ChatsScreen(),
+        '/profile': (_) => const ProfileScreen(),
+      },
     );
   }
 }
