@@ -7,7 +7,7 @@ class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
 
   static const _items = [
-    _NavItemData(icon: Icons.home_outlined,        label: 'Home',    route: '/home'),
+    _NavItemData(icon: Icons.home_outlined,        label: 'Home',    route: '/'),
     _NavItemData(icon: Icons.explore_outlined,     label: 'Explore', route: '/explore'),
     _NavItemData(icon: Icons.add_circle_outline,   label: 'Create',  route: '/create'),
     _NavItemData(icon: Icons.chat_bubble_outline,  label: 'Chats',   route: '/chats'),
