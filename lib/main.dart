@@ -6,6 +6,7 @@ import 'package:formative_assignment1/ui/screens/explore_screen.dart';
 import 'package:formative_assignment1/ui/screens/create_screen.dart';
 import 'package:formative_assignment1/ui/screens/chats_screen.dart';
 import 'package:formative_assignment1/ui/screens/profile_screen.dart';
+import 'package:formative_assignment1/ui/screens/RSVP_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         '/create':  (_) => const CreateScreen(),
         '/chats':   (_) => const ChatsScreen(),
         '/profile': (_) => const ProfileScreen(),
+        '/rsvp':   (_) => const RSVP(),
       },
     );
   }
