@@ -8,6 +8,7 @@ import 'package:formative_assignment1/ui/screens/chats_screen.dart';
 import 'package:formative_assignment1/ui/screens/profile_screen.dart';
 import 'package:formative_assignment1/ui/screens/post_details_screen.dart';
 import 'package:formative_assignment1/ui/screens/RSVP_screen.dart';
+import 'package:formative_assignment1/ui/screens/communities_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/chats':   (_) => const ChatsScreen(),
         '/profile': (_) => const ProfileScreen(),
         '/rsvp':   (_) => const RSVP(),
+        '/communities':(_) => const CommunitiesScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/post-details') {
