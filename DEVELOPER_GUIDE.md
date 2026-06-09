@@ -98,7 +98,7 @@ flutter run
 # Run on a specific platform
 flutter run -d android
 flutter run -d ios
-flutter run -d chrome   # web
+flutter run -d chrome   # webF
 ```
 
 ### Verify everything works
