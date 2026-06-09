@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:formative_assignment1/theme/app_theme.dart';
+import 'package:formative_assignment1/data/dummy_database.dart';
 import 'package:formative_assignment1/ui/widgets/app_bottom_nav_bar.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -6,188 +8,158 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // we use blue/noir
+    // Fetch user data from the local dummy database
+    final user = DummyDatabase.getUserById('usr_001');
 
-      backgroundColor: const Color(0xFFF8F9FA),
+    return Scaffold(
+      backgroundColor: AppColors.scaffoldBg,
 
       appBar: AppBar(
-        // Barre superieure avec le titre et l'icone d'engrenege
-        backgroundColor: Colors.grey[100],
+        backgroundColor: AppColors.white,
         elevation: 0.5,
         automaticallyImplyLeading: false,
-        title: const Text(
-          'My Profile',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 24)
+        title: Text(
+            'My Profile',
+            style: AppTextStyles.headingLarge
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings_outlined, color: Colors.black54),
-            onPressed: () {
-              // Action pour ouvrir les parametres
-            },
+            icon: Icon(Icons.settings_rounded, color: AppColors.textMedium),
+            onPressed: () {},
           ),
         ],
       ),
 
-      //2. Le corps de l'ecran avec tout le design de la maquette
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 30),
+            const SizedBox(height: AppSpacing.xl),
 
-            // 2.Photo de profile ambree
-
+            // Profile Image Section
             Center(
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.amber, width: 3),
-
+                  border: Border.all(color: AppColors.primary, width: AppSpacing.avatarBorderWidth),
+                  boxShadow: AppShadows.avatar,
                 ),
-                child: const CircleAvatar(
+                child: CircleAvatar(
                   radius: 52,
-                  backgroundColor: Colors.white,
-
+                  backgroundColor: AppColors.white,
+                  backgroundImage: NetworkImage(user?.avatarUrl ?? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256'),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Joseph Silver',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+            const SizedBox(height: AppSpacing.lg),
+
+            // Student Identity Info
+            Text(
+              user?.fullName ?? 'Aline Umuhoza',
+              style: AppTextStyles.headingMedium,
             ),
-            const SizedBox(height: 6),
-            //3. badge du campus
+            const SizedBox(height: AppSpacing.xs),
+
+            // Campus Badge
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
               decoration: BoxDecoration(
-                color: Colors.amber.withAlpha(40), // Rend la couleur ambree tres transparente
-                borderRadius: BorderRadius.circular(20),
+                color: AppColors.primaryLight,
+                borderRadius: BorderRadius.circular(AppRadius.chip),
               ),
-              child: const Text(
-                'Kigali campus',
-                style: TextStyle(fontSize: 13, color: Colors.amber, fontWeight:FontWeight.bold),
+              child: Text(
+                user?.campus ?? 'Kigali Campus',
+                style: AppTextStyles.labelSmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: AppSpacing.xl),
 
-            // 4. Bloc des Statistiques (Carte flottante)
-
+            // Statistics Section
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(AppRadius.card),
+                  boxShadow: AppShadows.card,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildStatItem('23', 'Events'),
-                    Container(height: 30, width: 1, color: Colors.grey.withValues(alpha: 0.2)), // separateur vertical
-                    _buildStatItem('5', 'Communities'),
-                    Container(height: 30, width: 1, color: Colors.grey.withValues(alpha: 0.2)),
-                    _buildStatItem('87', 'Connexions'),
+                    _buildStatItem(user?.eventIds.length.toString() ?? '23', 'Events'),
+                    Container(height: 30, width: 1, color: AppColors.cardBorder),
+                    _buildStatItem(user?.clubIds.length.toString() ?? '5', 'Communities'),
+                    Container(height: 30, width: 1, color: AppColors.cardBorder),
+                    _buildStatItem(user?.metadata['connects']?.toString() ?? '87', 'Connections'),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 24),
-            
-            // 4. Le Menu : Style 'Clean State' sur fond blsnc pur
+            const SizedBox(height: AppSpacing.xl),
+
+            // Options List Menu
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
+              margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(AppRadius.card),
+                boxShadow: AppShadows.card,
               ),
               child: Column(
                 children: [
-                  _buildMenuItem(Icons.chat_bubble_outline_rounded, 'My posts'),
+                  _buildMenuItem(Icons.chat_bubble_outline_rounded, 'My Posts', () {}),
                   _buildDivider(),
-                  _buildMenuItem(Icons.bookmark_border_rounded, 'Save'),
+                  _buildMenuItem(Icons.bookmark_outline_rounded, 'Saved', () {}),
                   _buildDivider(),
-                  _buildMenuItem(Icons.notifications_outlined, 'Notifications'),
+                  _buildMenuItem(Icons.notifications_outlined, 'Notifications', () {}),
                   _buildDivider(),
-                  _buildMenuItem(Icons.manage_accounts_rounded, 'Settings'),
+                  _buildMenuItem(Icons.person_outline_rounded, 'Account Settings', () {}),
                   _buildDivider(),
-                  _buildMenuItem(Icons.help_outline_rounded, 'Help & support'),
-            
+                  _buildMenuItem(Icons.help_outline_rounded, 'Help & Support', () {}),
                 ],
               ),
             ),
-            
-            const SizedBox(height: 30),
+            const SizedBox(height: AppSpacing.xxl),
           ],
-
         ),
       ),
+
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 4),
-      );
-    }
-    Widget _buildStatItem(String count, String label) {
+    );
+  }
+
+  Widget _buildStatItem(String count, String label) {
     return Column(
       children: [
-        Text(
-          count,
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
-          
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, color: Colors.black54, fontWeight: FontWeight.w500),
-        ),
-        
+        Text(count, style: AppTextStyles.statValue),
+        const SizedBox(height: AppSpacing.xs),
+        Text(label, style: AppTextStyles.statLabel),
       ],
     );
   }
-  
-  // Widget d'aide pour le menu
 
-  Widget _buildMenuItem(IconData icon, String title) {
+  Widget _buildMenuItem(IconData icon, String title, VoidCallback onTap) {
     return ListTile(
       leading: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(8),
+          color: AppColors.primaryLight,
+          borderRadius: BorderRadius.circular(AppRadius.sm),
         ),
-        child: Icon(icon, color: Colors.black87, size: 20),
-        
+        child: Icon(icon, color: AppColors.primary, size: 20),
       ),
-      title: Text(
-        title,
-        style: const TextStyle(color: Colors.black54, fontSize: 15, fontWeight: FontWeight.w500)
-      ),
-      trailing: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.black26, size: 14),
-      onTap: () {
-
-      },
+      title: Text(title, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textDark, fontWeight: FontWeight.w600)),
+      trailing: Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textMuted, size: 14),
+      onTap: onTap,
     );
   }
+
   Widget _buildDivider() {
     return Divider(
-      color: Colors.grey[200],
+      color: AppColors.cardBorder,
       height: 1,
-      indent: 16,
-      endIndent: 16,
+      indent: AppSpacing.lg,
+      endIndent: AppSpacing.lg,
     );
   }
 }

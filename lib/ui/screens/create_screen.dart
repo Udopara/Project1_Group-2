@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:formative_assignment1/theme/app_theme.dart';
 import 'package:formative_assignment1/ui/widgets/app_bottom_nav_bar.dart';
 
 class CreateScreen extends StatefulWidget {
@@ -9,208 +10,191 @@ class CreateScreen extends StatefulWidget {
 }
 
 class _CreateScreenState extends State<CreateScreen> {
-  // Controleurs pour recuperer du texte
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  // variable d'etat locales
-  String _selectedCategory = 'Accommodation';
-  final List<String> _categories = ['Accommodation', 'mutual aid', 'Events', 'Opportunity'];
+  String _selectedCategory = 'Event';
+  final List<String> _categories = ['Event', 'Housing', 'Peer Support', 'Opportunity'];
   bool _isLoading = false;
 
   @override
   void dispose() {
-    // Liberation de la memoire(important pour les controlleurs)
     _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
 
   void _submitPost() {
-    // Validation: on verifie que les champs contiennent du texte
     if (_titleController.text.trim().isEmpty || _descriptionController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill in the title and description.'),
-          backgroundColor: Colors.redAccent,
+        SnackBar(
+          content: const Text('Please fill out all required fields.'),
+          backgroundColor: AppColors.error,
         ),
       );
       return;
     }
 
-    // Debut du chargement simule
     setState(() {
       _isLoading = true;
     });
 
-    // Attentee simulee de 2 secondes (simulation reseau)
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
 
       setState(() {
         _isLoading = false;
       });
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Your post has been sent'),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: const Text('Your post has been successfully shared!'),
+          backgroundColor: AppColors.success,
         ),
       );
-      // Nettoie les champs apres envoi
+
       _titleController.clear();
       _descriptionController.clear();
-      setState(() {
-        _selectedCategory = _categories.first;
-      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: AppColors.scaffoldBg,
+
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         elevation: 1,
-        automaticallyImplyLeading: false, // evite la fleche de retour automatique
-        title: const Text(
-          'Create a post',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
+        automaticallyImplyLeading: false,
+        title: Text(
+          'Create Post',
+          style: AppTextStyles.headingLarge,
         ),
       ),
-      // Si l'application charge, on montre un indicateur, sinon on affiche le formulaire deroulant
+
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.amber))
+          ? Center(child: CircularProgressIndicator(color: AppColors.primary))
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            // Cover Image Container
+            Container(
+              width: double.infinity,
+              height: 140,
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(AppRadius.card),
+                border: Border.all(color: AppColors.cardBorder, width: 2),
+              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  //Zone de televersement d'image
-                  Container(
-                    width: double.infinity,
-                    height: 140,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.amber.withValues(alpha: 60/255), width: 2),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.add_a_photo_outlined, color: Colors.amber, size: 38),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Add a cover image',
-                          style: TextStyle(color: Colors.grey[600], fontSize: 14, fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  //Champ : titre
-                  const Text(
-                    'Publication Title',
-                    style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: _titleController,
-                    style: const TextStyle(color: Colors.black87),
-                    decoration: InputDecoration(
-                      hintText: "Accommodation Available, training workshop ....",
-                      hintStyle: const TextStyle(color: Colors.black26),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  //Champ : Categorie
-                  const Text(
-                    'Category',
-                    style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  DropdownButtonFormField<String>(
-                    value: _selectedCategory,
-                    dropdownColor: Colors.white,
-                    style: const TextStyle(color: Colors.black87, fontSize: 16),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    items: _categories.map((String cat) {
-                      return DropdownMenuItem<String>(
-                        value: cat,
-                        child: Text(cat),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedCategory = newValue!;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20),
-
-                  //Champ : Description
-                  const Text(
-                    'Description',
-                    style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: _descriptionController,
-                    maxLines: 4,
-                    style: const TextStyle(color: Colors.black87),
-                    decoration: InputDecoration(
-                      hintText: "Describe your post here...",
-                      hintStyle: const TextStyle(color: Colors.black26),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Bouton Publier
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: _submitPost,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.amber,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text(
-                        'Publish',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add_photo_alternate_outlined, color: AppColors.primary, size: 36),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'Add a cover image',
+                    style: AppTextStyles.bodySmall,
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // Input: TITLE
+            Text('Post Title', style: AppTextStyles.headingSmall),
+            const SizedBox(height: AppSpacing.sm),
+            TextField(
+              controller: _titleController,
+              style: TextStyle(color: AppColors.textDark),
+              decoration: InputDecoration(
+                hintText: "e.g., Leadership Workshop, Roommate Wanted...",
+                hintStyle: TextStyle(color: AppColors.textMuted),
+                filled: true,
+                fillColor: AppColors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.input),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // Input: CATEGORY
+            Text('Category', style: AppTextStyles.headingSmall),
+            const SizedBox(height: AppSpacing.sm),
+            DropdownButtonFormField<String>(
+              value: _selectedCategory,
+              dropdownColor: AppColors.white,
+              style: TextStyle(color: AppColors.textDark, fontSize: 16),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.input),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              items: _categories.map((String cat) {
+                return DropdownMenuItem<String>(
+                  value: cat,
+                  child: Text(cat),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedCategory = newValue!;
+                });
+              },
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // Input: DESCRIPTION
+            Text('Description', style: AppTextStyles.headingSmall),
+            const SizedBox(height: AppSpacing.sm),
+            TextField(
+              controller: _descriptionController,
+              maxLines: 4,
+              style: TextStyle(color: AppColors.textDark),
+              decoration: InputDecoration(
+                hintText: "Tell the campus more about this...",
+                hintStyle: TextStyle(color: AppColors.textMuted),
+                filled: true,
+                fillColor: AppColors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.input),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xxl),
+
+            // Submit Button
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton(
+                onPressed: _submitPost,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.button),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  'Publish Post',
+                  style: AppTextStyles.labelMedium.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
     );
   }
