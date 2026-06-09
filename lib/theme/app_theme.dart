@@ -8,32 +8,32 @@ class AppColors {
   AppColors._();
 
   // Brand / Primary
-  static const Color primary        = Color(0xFF4648D4);
-  static const Color primaryLight   = Color(0xFFF2F3FF);
-  static const Color gradientStart  = Color(0xFF4648D4);
-  static const Color gradientEnd    = Color(0xFFB90538);
+  static const Color primary = Color(0xFF4648D4);
+  static const Color primaryLight = Color(0xFFF2F3FF);
+  static const Color gradientStart = Color(0xFF4648D4);
+  static const Color gradientEnd = Color(0xFFB90538);
 
   // Backgrounds
-  static const Color white          = Color(0xFFFFFFFF);
-  static const Color cardBorder     = Color(0xFFEAEDFF);
-  static const Color scaffoldBg     = Color(0xFFF5F6FF);
+  static const Color white = Color(0xFFFFFFFF);
+  static const Color cardBorder = Color(0xFFEAEDFF);
+  static const Color scaffoldBg = Color(0xFFF5F6FF);
 
   // Text
-  static const Color textDark       = Color(0xFF131B2E);
-  static const Color textMedium     = Color(0xFF464554);
-  static const Color textMuted      = Color(0xFF767586);
+  static const Color textDark = Color(0xFF131B2E);
+  static const Color textMedium = Color(0xFF464554);
+  static const Color textMuted = Color(0xFF767586);
 
   // Semantic
-  static const Color success        = Color(0xFF00885D);
-  static const Color error          = Color(0xFFD32F2F);
-  static const Color warning        = Color(0xFFF59E0B);
+  static const Color success = Color(0xFF00885D);
+  static const Color error = Color(0xFFD32F2F);
+  static const Color warning = Color(0xFFF59E0B);
 
   // Stat tile
-  static const Color statValue      = Color(0xFF4648D4);
-  static const Color statTileBg     = Color(0xFFF2F3FF);
+  static const Color statValue = Color(0xFF4648D4);
+  static const Color statTileBg = Color(0xFFF2F3FF);
 
   // Online badge
-  static const Color onlineBadge    = Color(0xFF00885D);
+  static const Color onlineBadge = Color(0xFF00885D);
 }
 
 // ─────────────────────────────────────────────
@@ -153,19 +153,19 @@ class AppTextStyles {
 class AppSpacing {
   AppSpacing._();
 
-  static const double xs   = 4.0;
-  static const double sm   = 8.0;
-  static const double md   = 12.0;
-  static const double lg   = 16.0;
-  static const double xl   = 24.0;
-  static const double xxl  = 32.0;
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double md = 12.0;
+  static const double lg = 16.0;
+  static const double xl = 24.0;
+  static const double xxl = 32.0;
   static const double xxxl = 48.0;
 
   // Component-specific
-  static const double cardPadding       = 24.0;
-  static const double statGridGap       = 12.0;
+  static const double cardPadding = 24.0;
+  static const double statGridGap = 12.0;
   static const double avatarBorderWidth = 4.0;
-  static const double badgeBorderWidth  = 2.0;
+  static const double badgeBorderWidth = 2.0;
 }
 
 // ─────────────────────────────────────────────
@@ -175,22 +175,22 @@ class AppSpacing {
 class AppRadius {
   AppRadius._();
 
-  static const double xs      = 4.0;
-  static const double sm      = 8.0;
-  static const double md      = 12.0;
-  static const double lg      = 16.0;
-  static const double xl      = 24.0;
-  static const double full    = 9999.0;
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double md = 12.0;
+  static const double lg = 16.0;
+  static const double xl = 24.0;
+  static const double full = 9999.0;
 
   // Component-specific
-  static const double card            = 16.0;
-  static const double statTile        = 12.0;
-  static const double gradientBanner  = 12.0;
-  static const double avatar          = 9999.0;
-  static const double badge           = 9999.0;
-  static const double chip            = 9999.0;
-  static const double button          = 12.0;
-  static const double input           = 12.0;
+  static const double card = 16.0;
+  static const double statTile = 12.0;
+  static const double gradientBanner = 12.0;
+  static const double avatar = 9999.0;
+  static const double badge = 9999.0;
+  static const double chip = 9999.0;
+  static const double button = 12.0;
+  static const double input = 12.0;
 }
 
 // ─────────────────────────────────────────────
