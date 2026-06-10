@@ -12,6 +12,7 @@ class AppBottomNavBar extends StatelessWidget {
     _NavItemData(icon: Icons.add_circle_outline,   label: 'Create',  route: '/create'),
     _NavItemData(icon: Icons.chat_bubble_outline,  label: 'Chats',   route: '/chats'),
     _NavItemData(icon: Icons.person_outline,       label: 'Profile', route: '/profile'),
+    _NavItemData(icon: Icons.group_outlined,       label: 'Communities', route: '/communities'),
   ];
 
   @override
