@@ -172,13 +172,20 @@ class ChatsScreen extends StatelessWidget {
                       lastMsg.receiverId == me.id;
                   return Padding(
                     padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                    child: _ChatRow(
-                      avatarUrl: other.avatarUrl,
-                      name: other.fullName,
-                      preview: lastMsg?.content ?? '',
-                      time: lastMsg != null ? _formatTime(lastMsg.sentAt) : '',
-                      unreadCount: hasUnread ? 1 : 0,
-                      isGroup: false,
+                    child: GestureDetector(
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        '/chat-detail',
+                        arguments: otherId,
+                      ),
+                      child: _ChatRow(
+                        avatarUrl: other.avatarUrl,
+                        name: other.fullName,
+                        preview: lastMsg?.content ?? '',
+                        time: lastMsg != null ? _formatTime(lastMsg.sentAt) : '',
+                        unreadCount: hasUnread ? 1 : 0,
+                        isGroup: false,
+                      ),
                     ),
                   );
                 }, childCount: threads.length),
