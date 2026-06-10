@@ -26,15 +26,15 @@ class ChatsScreen extends StatelessWidget {
         titleSpacing: 0,
         leading: Padding(
           padding: const EdgeInsets.all(10),
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(me.avatarUrl),
-          ),
+          child: CircleAvatar(backgroundImage: NetworkImage(me.avatarUrl)),
         ),
         title: const Text('Messages'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_outlined,
-                color: AppColors.textDark),
+            icon: const Icon(
+              Icons.notifications_outlined,
+              color: AppColors.textDark,
+            ),
             onPressed: () {},
           ),
         ],
@@ -53,12 +53,15 @@ class ChatsScreen extends StatelessWidget {
         top: false,
         child: CustomScrollView(
           slivers: [
-
             // ── Search bar ─────────────────────────────────────────────
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.lg),
+                  AppSpacing.lg,
+                  AppSpacing.md,
+                  AppSpacing.lg,
+                  AppSpacing.lg,
+                ),
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.white,
@@ -68,15 +71,17 @@ class ChatsScreen extends StatelessWidget {
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: 'Search conversations...',
-                      prefixIcon: const Icon(Icons.search,
-                          color: AppColors.textMuted, size: 20),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: AppColors.textMuted,
+                        size: 20,
+                      ),
                       filled: false,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(AppRadius.chip),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding:
-                          const EdgeInsets.symmetric(vertical: 14),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 14),
                     ),
                   ),
                 ),
@@ -87,7 +92,9 @@ class ChatsScreen extends StatelessWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(
-                    left: AppSpacing.lg, bottom: AppSpacing.sm),
+                  left: AppSpacing.lg,
+                  bottom: AppSpacing.sm,
+                ),
                 child: Text(
                   'ACTIVE NOW',
                   style: AppTextStyles.caption.copyWith(
@@ -98,19 +105,18 @@ class ChatsScreen extends StatelessWidget {
               ),
             ),
 
-            // ── Active users horizontal list ────────────────────────────
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 90,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg),
+                    horizontal: AppSpacing.lg,
+                  ),
                   children: [
                     ...activeUsers.map(
                       (u) => Padding(
-                        padding:
-                            const EdgeInsets.only(right: AppSpacing.lg),
+                        padding: const EdgeInsets.only(right: AppSpacing.lg),
                         child: _ActiveUserItem(
                           avatarUrl: u.avatarUrl,
                           name: u.fullName.split(' ').first,
@@ -123,12 +129,14 @@ class ChatsScreen extends StatelessWidget {
               ),
             ),
 
-            // ── "RECENT CHATS" heading ──────────────────────────────────
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.lg, AppSpacing.xl,
-                    AppSpacing.lg, AppSpacing.sm),
+                  AppSpacing.lg,
+                  AppSpacing.xl,
+                  AppSpacing.lg,
+                  AppSpacing.sm,
+                ),
                 child: Text(
                   'RECENT CHATS',
                   style: AppTextStyles.caption.copyWith(
@@ -139,44 +147,43 @@ class ChatsScreen extends StatelessWidget {
               ),
             ),
 
-            // ── Chat rows ──────────────────────────────────────────────
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xxl),
+                AppSpacing.lg,
+                0,
+                AppSpacing.lg,
+                AppSpacing.xxl,
+              ),
               sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (_, i) {
-                    final thread = threads[i];
-                    final otherId = thread.participantIds
-                        .firstWhere((id) => id != me.id);
-                    final other = DummyDatabase.getUserById(otherId);
-                    if (other == null) return const SizedBox.shrink();
-                    final lastMsg = thread.messages.isNotEmpty
-                        ? thread.messages.last
-                        : null;
-                    final hasUnread = lastMsg != null &&
-                        lastMsg.status != MessageStatus.read &&
-                        lastMsg.receiverId == me.id;
-                    return Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: AppSpacing.sm),
-                      child: _ChatRow(
-                        avatarUrl: other.avatarUrl,
-                        name: other.fullName,
-                        preview: lastMsg?.content ?? '',
-                        time: lastMsg != null
-                            ? _formatTime(lastMsg.sentAt)
-                            : '',
-                        unreadCount: hasUnread ? 1 : 0,
-                        isGroup: false,
-                      ),
-                    );
-                  },
-                  childCount: threads.length,
-                ),
+                delegate: SliverChildBuilderDelegate((_, i) {
+                  final thread = threads[i];
+                  final otherId = thread.participantIds.firstWhere(
+                    (id) => id != me.id,
+                    orElse: () => '',
+                  );
+                  final other = DummyDatabase.getUserById(otherId);
+                  if (other == null) return const SizedBox.shrink();
+                  final lastMsg = thread.messages.isNotEmpty
+                      ? thread.messages.last
+                      : null;
+                  final hasUnread =
+                      lastMsg != null &&
+                      lastMsg.status != MessageStatus.read &&
+                      lastMsg.receiverId == me.id;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: _ChatRow(
+                      avatarUrl: other.avatarUrl,
+                      name: other.fullName,
+                      preview: lastMsg?.content ?? '',
+                      time: lastMsg != null ? _formatTime(lastMsg.sentAt) : '',
+                      unreadCount: hasUnread ? 1 : 0,
+                      isGroup: false,
+                    ),
+                  );
+                }, childCount: threads.length),
               ),
             ),
-
           ],
         ),
       ),
@@ -185,15 +192,13 @@ class ChatsScreen extends StatelessWidget {
 
   String _formatTime(DateTime dt) {
     final now = DateTime.now();
-    if (dt.day == now.day && dt.month == now.month) {
+    if (dt.year == now.year && dt.month == now.month && dt.day == now.day) {
       return '${dt.hour.toString().padLeft(2, '0')}:'
           '${dt.minute.toString().padLeft(2, '0')}';
     }
     return '${dt.day}/${dt.month}';
   }
 }
-
-// ── Active user item ──────────────────────────────────────────────────────────
 
 class _ActiveUserItem extends StatelessWidget {
   const _ActiveUserItem({required this.avatarUrl, required this.name});
@@ -215,9 +220,7 @@ class _ActiveUserItem extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.primary, width: 2),
               ),
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(avatarUrl),
-              ),
+              child: CircleAvatar(backgroundImage: NetworkImage(avatarUrl)),
             ),
             Positioned(
               bottom: 2,
@@ -228,8 +231,7 @@ class _ActiveUserItem extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.onlineBadge,
                   shape: BoxShape.circle,
-                  border: Border.all(
-                      color: AppColors.scaffoldBg, width: 2),
+                  border: Border.all(color: AppColors.scaffoldBg, width: 2),
                 ),
               ),
             ),
@@ -241,8 +243,6 @@ class _ActiveUserItem extends StatelessWidget {
     );
   }
 }
-
-// ── Add contact item (dashed circle) ─────────────────────────────────────────
 
 class _AddContactItem extends StatelessWidget {
   const _AddContactItem();
@@ -299,8 +299,6 @@ class _DashedCirclePainter extends CustomPainter {
   bool shouldRepaint(_DashedCirclePainter old) => old.color != color;
 }
 
-// ── Chat row ──────────────────────────────────────────────────────────────────
-
 class _ChatRow extends StatelessWidget {
   const _ChatRow({
     required this.avatarUrl,
@@ -337,19 +335,22 @@ class _ChatRow extends StatelessWidget {
                 color: AppColors.primaryLight,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.group_outlined,
-                  color: AppColors.primary, size: 24),
+              child: const Icon(
+                Icons.group_outlined,
+                color: AppColors.primary,
+                size: 24,
+              ),
             )
           else
             CircleAvatar(
               radius: 24,
-              backgroundImage:
-                  avatarUrl != null ? NetworkImage(avatarUrl!) : null,
+              backgroundImage: avatarUrl != null
+                  ? NetworkImage(avatarUrl!)
+                  : null,
             ),
 
           const SizedBox(width: AppSpacing.md),
 
-          // Name + preview
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -374,7 +375,6 @@ class _ChatRow extends StatelessWidget {
 
           const SizedBox(width: AppSpacing.sm),
 
-          // Timestamp + unread badge
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
@@ -393,7 +393,9 @@ class _ChatRow extends StatelessWidget {
                     child: Text(
                       '$unreadCount',
                       style: AppTextStyles.caption.copyWith(
-                          color: AppColors.white, fontSize: 10),
+                        color: AppColors.white,
+                        fontSize: 10,
+                      ),
                     ),
                   ),
                 ),

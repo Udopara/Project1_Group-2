@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:formative_assignment1/data/dummy_database.dart';
+import 'package:formative_assignment1/data/session.dart';
 import 'package:formative_assignment1/theme/app_theme.dart';
 import 'package:formative_assignment1/ui/widgets/app_bottom_nav_bar.dart';
 
@@ -14,8 +16,12 @@ class _CreateScreenState extends State<CreateScreen> {
   final TextEditingController _descriptionController = TextEditingController();
 
   String _selectedCategory = 'Event';
-  final List<String> _categories = ['Event', 'Housing', 'Peer Support', 'Opportunity'];
-  bool _isLoading = false;
+  final List<String> _categories = [
+    'Event',
+    'Housing',
+    'Peer Support',
+    'Opportunity',
+  ];
 
   @override
   void dispose() {
@@ -25,7 +31,8 @@ class _CreateScreenState extends State<CreateScreen> {
   }
 
   void _submitPost() {
-    if (_titleController.text.trim().isEmpty || _descriptionController.text.trim().isEmpty) {
+    if (_titleController.text.trim().isEmpty ||
+        _descriptionController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Please fill out all required fields.'),
@@ -35,27 +42,41 @@ class _CreateScreenState extends State<CreateScreen> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    final authorId = Session.currentUser?.id ?? 'usr_001';
+    final now = DateTime.now();
+    final post = PostModel(
+      id: 'pst_${now.millisecondsSinceEpoch}',
+      authorId: authorId,
+      content:
+          '${_titleController.text.trim()}\n\n${_descriptionController.text.trim()}',
+      type: _selectedCategory == 'Event'
+          ? PostType.announcement
+          : PostType.text,
+      imageUrls: [],
+      likeIds: [],
+      comments: [],
+      isPinned: false,
+      createdAt: now,
+      updatedAt: now,
+      metadata: {
+        'views': 0,
+        'shares': 0,
+        'isReported': false,
+        'tags': [_selectedCategory.toLowerCase()],
+      },
+    );
 
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
+    DummyDatabase.posts.add(post);
 
-      setState(() {
-        _isLoading = false;
-      });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Your post has been successfully shared!'),
+        backgroundColor: AppColors.success,
+      ),
+    );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Your post has been successfully shared!'),
-          backgroundColor: AppColors.success,
-        ),
-      );
-
-      _titleController.clear();
-      _descriptionController.clear();
-    });
+    _titleController.clear();
+    _descriptionController.clear();
   }
 
   @override
@@ -67,20 +88,14 @@ class _CreateScreenState extends State<CreateScreen> {
         backgroundColor: AppColors.white,
         elevation: 1,
         automaticallyImplyLeading: false,
-        title: Text(
-          'Create Post',
-          style: AppTextStyles.headingLarge,
-        ),
+        title: Text('Create Post', style: AppTextStyles.headingLarge),
       ),
 
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator(color: AppColors.primary))
-          : SingleChildScrollView(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // Cover Image Container
             Container(
               width: double.infinity,
@@ -93,12 +108,13 @@ class _CreateScreenState extends State<CreateScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.add_photo_alternate_outlined, color: AppColors.primary, size: 36),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Add a cover image',
-                    style: AppTextStyles.bodySmall,
+                  Icon(
+                    Icons.add_photo_alternate_outlined,
+                    color: AppColors.primary,
+                    size: 36,
                   ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text('Add a cover image', style: AppTextStyles.bodySmall),
                 ],
               ),
             ),
@@ -127,7 +143,7 @@ class _CreateScreenState extends State<CreateScreen> {
             Text('Category', style: AppTextStyles.headingSmall),
             const SizedBox(height: AppSpacing.sm),
             DropdownButtonFormField<String>(
-              value: _selectedCategory,
+              initialValue: _selectedCategory,
               dropdownColor: AppColors.white,
               style: TextStyle(color: AppColors.textDark, fontSize: 16),
               decoration: InputDecoration(
@@ -139,10 +155,7 @@ class _CreateScreenState extends State<CreateScreen> {
                 ),
               ),
               items: _categories.map((String cat) {
-                return DropdownMenuItem<String>(
-                  value: cat,
-                  child: Text(cat),
-                );
+                return DropdownMenuItem<String>(value: cat, child: Text(cat));
               }).toList(),
               onChanged: (String? newValue) {
                 setState(() {
@@ -187,7 +200,10 @@ class _CreateScreenState extends State<CreateScreen> {
                 ),
                 child: Text(
                   'Publish Post',
-                  style: AppTextStyles.labelMedium.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: AppColors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

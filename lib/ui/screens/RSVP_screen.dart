@@ -17,7 +17,10 @@ class _RSVPState extends State<RSVP> {
   @override
   Widget build(BuildContext context) {
     final userId = Session.currentUser?.id ?? 'usr_001';
-    final events = DummyDatabase.getEventsByUser(userId);
+    final statusFilter = _selectedTab == 0 ? 'going' : 'interested';
+    final events = DummyDatabase.getEventsByUser(
+      userId,
+    ).where((e) => e.rsvpStatus == statusFilter).toList();
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
@@ -35,21 +38,28 @@ class _RSVPState extends State<RSVP> {
               child: Session.currentUser?.avatarUrl == null
                   ? Text(
                       Session.currentUser?.fullName.substring(0, 1) ?? 'A',
-                      style: AppTextStyles.labelMedium.copyWith(color: AppColors.primary),
+                      style: AppTextStyles.labelMedium.copyWith(
+                        color: AppColors.primary,
+                      ),
                     )
                   : null,
             ),
             SizedBox(width: AppSpacing.md),
             Text(
               "ALU Intercampus",
-              style: AppTextStyles.headingSmall.copyWith(color: AppColors.primary),
+              style: AppTextStyles.headingSmall.copyWith(
+                color: AppColors.primary,
+              ),
             ),
           ],
         ),
         centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_outlined, color: AppColors.primary),
+            icon: const Icon(
+              Icons.notifications_outlined,
+              color: AppColors.primary,
+            ),
             onPressed: () {},
           ),
         ],
@@ -59,7 +69,10 @@ class _RSVPState extends State<RSVP> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.lg, AppSpacing.xl, AppSpacing.lg, AppSpacing.sm,
+              AppSpacing.lg,
+              AppSpacing.xl,
+              AppSpacing.lg,
+              AppSpacing.sm,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,7 +81,9 @@ class _RSVPState extends State<RSVP> {
                 SizedBox(height: AppSpacing.xs),
                 Text(
                   "Manage your upcoming campus experiences.",
-                  style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textMuted),
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textMuted,
+                  ),
                 ),
                 SizedBox(height: AppSpacing.lg),
                 _TabBar(
@@ -83,7 +98,9 @@ class _RSVPState extends State<RSVP> {
                 ? Center(
                     child: Text(
                       "No events yet.",
-                      style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textMuted),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textMuted,
+                      ),
                     ),
                   )
                 : ListView.separated(
@@ -92,7 +109,8 @@ class _RSVPState extends State<RSVP> {
                       vertical: AppSpacing.sm,
                     ),
                     itemCount: events.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.lg),
+                    separatorBuilder: (_, _) =>
+                        const SizedBox(height: AppSpacing.lg),
                     itemBuilder: (_, index) => _EventCard(event: events[index]),
                   ),
           ),
@@ -139,7 +157,11 @@ class _TabBar extends StatelessWidget {
 }
 
 class _TabItem extends StatelessWidget {
-  const _TabItem({required this.label, required this.selected, required this.onTap});
+  const _TabItem({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
 
   final String label;
   final bool selected;
@@ -178,8 +200,18 @@ class _EventCard extends StatelessWidget {
 
   String _formatDate(DateTime dt) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     final hour = dt.hour > 12 ? dt.hour - 12 : (dt.hour == 0 ? 12 : dt.hour);
     final minute = dt.minute.toString().padLeft(2, '0');
@@ -189,105 +221,120 @@ class _EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(AppRadius.card),
-        boxShadow: AppShadows.card,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(AppRadius.card),
-            ),
-            child: Stack(
-              children: [
-                Image.network(
-                  event.bannerUrl,
-                  width: double.infinity,
-                  height: 180,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, _, _) => Container(
+    return GestureDetector(
+      onTap: () =>
+          Navigator.pushNamed(context, '/post-details', arguments: event.id),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          boxShadow: AppShadows.card,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppRadius.card),
+              ),
+              child: Stack(
+                children: [
+                  Image.network(
+                    event.bannerUrl,
+                    width: double.infinity,
                     height: 180,
-                    color: AppColors.primaryLight,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) =>
+                        Container(height: 180, color: AppColors.primaryLight),
                   ),
-                ),
-                Positioned(
-                  bottom: AppSpacing.md,
-                  left: AppSpacing.md,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                      vertical: AppSpacing.xs,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.success,
-                      borderRadius: BorderRadius.circular(AppRadius.full),
-                    ),
-                    child: Text(
-                      'GOING',
-                      style: AppTextStyles.labelSmall.copyWith(
-                        color: AppColors.white,
-                        fontWeight: FontWeight.w600,
+                  Positioned(
+                    bottom: AppSpacing.md,
+                    left: AppSpacing.md,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
                       ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: AppSpacing.md,
-                  right: AppSpacing.md,
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: const BoxDecoration(
-                      color: Color(0x44000000),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.favorite_border,
-                      color: AppColors.white,
-                      size: 18,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(event.title, style: AppTextStyles.headingSmall),
-                SizedBox(height: AppSpacing.sm),
-                Row(
-                  children: [
-                    const Icon(Icons.calendar_today_outlined, size: 14, color: AppColors.textMuted),
-                    SizedBox(width: AppSpacing.xs),
-                    Text(_formatDate(event.startDate), style: AppTextStyles.caption),
-                  ],
-                ),
-                SizedBox(height: AppSpacing.xs),
-                Row(
-                  children: [
-                    const Icon(Icons.location_on_outlined, size: 14, color: AppColors.textMuted),
-                    SizedBox(width: AppSpacing.xs),
-                    Expanded(
+                      decoration: BoxDecoration(
+                        color: event.rsvpStatus == 'going'
+                            ? AppColors.success
+                            : AppColors.warning,
+                        borderRadius: BorderRadius.circular(AppRadius.full),
+                      ),
                       child: Text(
-                        event.location,
-                        style: AppTextStyles.caption,
-                        overflow: TextOverflow.ellipsis,
+                        event.rsvpStatus == 'going' ? 'GOING' : 'INTERESTED',
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(height: AppSpacing.xs),
-              ],
+                  ),
+                  Positioned(
+                    bottom: AppSpacing.md,
+                    right: AppSpacing.md,
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: const BoxDecoration(
+                        color: Color(0x44000000),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.favorite_border,
+                        color: AppColors.white,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(event.title, style: AppTextStyles.headingSmall),
+                  SizedBox(height: AppSpacing.sm),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today_outlined,
+                        size: 14,
+                        color: AppColors.textMuted,
+                      ),
+                      SizedBox(width: AppSpacing.xs),
+                      Text(
+                        _formatDate(event.startDate),
+                        style: AppTextStyles.caption,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: AppSpacing.xs),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on_outlined,
+                        size: 14,
+                        color: AppColors.textMuted,
+                      ),
+                      SizedBox(width: AppSpacing.xs),
+                      Expanded(
+                        child: Text(
+                          event.location,
+                          style: AppTextStyles.caption,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: AppSpacing.xs),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

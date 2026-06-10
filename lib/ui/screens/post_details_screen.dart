@@ -29,7 +29,8 @@ class PostDetailsScreen extends StatelessWidget {
         .whereType<UserModel>()
         .toList();
     final extraCount = (event.attendeeIds.length - 3).clamp(0, 999);
-    final tags = ((event.metadata['tags'] as List?)?.cast<String>()) ?? <String>[];
+    final tags =
+        ((event.metadata['tags'] as List?)?.cast<String>()) ?? <String>[];
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
@@ -58,8 +59,15 @@ class PostDetailsScreen extends StatelessWidget {
                       runSpacing: AppSpacing.sm,
                       children: [
                         _TagChip(
-                            label: _categoryLabel(event.category), index: 0),
-                        ...tags.take(2).toList().asMap().entries.map(
+                          label: _categoryLabel(event.category),
+                          index: 0,
+                        ),
+                        ...tags
+                            .take(2)
+                            .toList()
+                            .asMap()
+                            .entries
+                            .map(
                               (e) => _TagChip(label: e.value, index: e.key + 1),
                             ),
                       ],
@@ -73,7 +81,9 @@ class PostDetailsScreen extends StatelessWidget {
                     // Attendee avatars
                     if (event.attendeeIds.isNotEmpty)
                       _AttendeesRow(
-                          users: attendeeUsers, extraCount: extraCount),
+                        users: attendeeUsers,
+                        extraCount: extraCount,
+                      ),
                     if (event.attendeeIds.isNotEmpty)
                       const SizedBox(height: AppSpacing.lg),
 
@@ -101,11 +111,9 @@ class PostDetailsScreen extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xl),
 
                     // About
-                    Text('About the Event',
-                        style: AppTextStyles.headingSmall),
+                    Text('About the Event', style: AppTextStyles.headingSmall),
                     const SizedBox(height: AppSpacing.sm),
-                    Text(event.description,
-                        style: AppTextStyles.bodyMedium),
+                    Text(event.description, style: AppTextStyles.bodyMedium),
                     const SizedBox(height: AppSpacing.xl),
 
                     // Speaker card
@@ -126,18 +134,28 @@ class PostDetailsScreen extends StatelessWidget {
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 String _categoryLabel(EventCategory cat) => switch (cat) {
-      EventCategory.academic => 'Academic',
-      EventCategory.social => 'Social',
-      EventCategory.sports => 'Sports',
-      EventCategory.tech => 'Workshop',
-      EventCategory.cultural => 'Cultural',
-      EventCategory.career => 'Career',
-    };
+  EventCategory.academic => 'Academic',
+  EventCategory.social => 'Social',
+  EventCategory.sports => 'Sports',
+  EventCategory.tech => 'Workshop',
+  EventCategory.cultural => 'Cultural',
+  EventCategory.career => 'Career',
+};
 
 String _formatDate(DateTime dt) {
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
   return '${months[dt.month - 1]} ${dt.day}, ${dt.year}';
 }
@@ -170,8 +188,11 @@ class _HeroSection extends StatelessWidget {
             fit: BoxFit.cover,
             errorBuilder: (ctx, err, st) => Container(
               color: AppColors.primaryLight,
-              child: const Icon(Icons.image_outlined,
-                  color: AppColors.primary, size: 48),
+              child: const Icon(
+                Icons.image_outlined,
+                color: AppColors.primary,
+                size: 48,
+              ),
             ),
           ),
           // Bottom fade overlay
@@ -250,8 +271,7 @@ class _TagChip extends StatelessWidget {
     final bg = _bgColors[index % _bgColors.length];
     final fg = _textColors[index % _textColors.length];
     return Container(
-      padding:
-          const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(AppRadius.full),
@@ -332,8 +352,7 @@ class _AttendeesRow extends StatelessWidget {
         const SizedBox(width: AppSpacing.sm),
         Text(
           'Attending this event',
-          style: AppTextStyles.bodySmall
-              .copyWith(color: AppColors.textMedium),
+          style: AppTextStyles.bodySmall.copyWith(color: AppColors.textMedium),
         ),
       ],
     );
@@ -424,7 +443,9 @@ class _SpeakerCard extends StatelessWidget {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.xl, horizontal: AppSpacing.lg),
+          vertical: AppSpacing.xl,
+          horizontal: AppSpacing.lg,
+        ),
         decoration: BoxDecoration(
           color: AppColors.primaryLight,
           borderRadius: BorderRadius.circular(AppRadius.md),
@@ -470,8 +491,9 @@ class _SpeakerCard extends StatelessWidget {
               ),
               child: Text(
                 'View Profile',
-                style: AppTextStyles.labelMedium
-                    .copyWith(color: AppColors.primary),
+                style: AppTextStyles.labelMedium.copyWith(
+                  color: AppColors.primary,
+                ),
               ),
             ),
           ],
@@ -523,5 +545,6 @@ class _DashedRectPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_DashedRectPainter old) => old.color != color;
+  bool shouldRepaint(_DashedRectPainter old) =>
+      old.color != color || old.radius != radius;
 }
