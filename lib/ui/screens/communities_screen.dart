@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:formative_assignment1/ui/widgets/app_bottom_nav_bar.dart';
+import 'package:formative_assignment1/theme/app_theme.dart';
 
 class CommunitiesScreen extends StatefulWidget {
   const CommunitiesScreen({super.key});
@@ -11,6 +12,9 @@ class CommunitiesScreen extends StatefulWidget {
 class _CommunitiesScreenState extends State<CommunitiesScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
+
+  String searchQuery = "";
 
   final List<Map<String, dynamic>> communities = [
     {
@@ -21,7 +25,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen>
       "category": "Academic",
       "joined": false,
       "icon": Icons.record_voice_over_outlined,
-      "color": Colors.indigo,
+      "color": AppColors.primary,
     },
     {
       "name": "Entrepreneurship Club",
@@ -31,7 +35,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen>
       "category": "Innovation",
       "joined": true,
       "icon": Icons.lightbulb_outline,
-      "color": Colors.pink,
+      "color": AppColors.gradientEnd,
     },
     {
       "name": "Women in Leadership",
@@ -41,7 +45,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen>
       "category": "Leadership",
       "joined": false,
       "icon": Icons.female,
-      "color": Colors.teal,
+      "color": AppColors.success,
     },
     {
       "name": "Developers Guild",
@@ -51,7 +55,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen>
       "category": "Technology",
       "joined": false,
       "icon": Icons.code,
-      "color": Colors.green,
+      "color": AppColors.primary,
     },
   ];
 
@@ -59,96 +63,156 @@ class _CommunitiesScreenState extends State<CommunitiesScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) return;
+      setState(() {});
+    });
+
+    _searchController.addListener(() {
+      setState(() {
+        searchQuery = _searchController.text.toLowerCase();
+      });
+    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  // ─────────────────────────────────────────────
+  // FULL FILTER ENGINE (TAB + SEARCH)
+  // ─────────────────────────────────────────────
+  List<Map<String, dynamic>> get filteredCommunities {
+    List<Map<String, dynamic>> data = communities;
+
+    // TAB FILTER
+    if (_tabController.index == 1) {
+      data = data.where((c) => c["joined"] == true).toList();
+    }
+
+    // SEARCH FILTER
+    if (searchQuery.isNotEmpty) {
+      data = data.where((c) {
+        final name = c["name"].toString().toLowerCase();
+        final category = c["category"].toString().toLowerCase();
+        return name.contains(searchQuery) ||
+            category.contains(searchQuery);
+      }).toList();
+    }
+
+    return data;
+  }
+
+  void toggleJoin(String name) {
+    setState(() {
+      final index = communities.indexWhere((c) => c["name"] == name);
+      communities[index]["joined"] =
+          !(communities[index]["joined"] as bool);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF4F46E5);
+    final data = filteredCommunities;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F6FC),
+      backgroundColor: AppColors.scaffoldBg,
       bottomNavigationBar: AppBottomNavBar(currentIndex: 5),
       body: SafeArea(
         child: Column(
           children: [
-            
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      const SizedBox(height: AppSpacing.lg),
+
+                      Text(
                         "Explore Communities",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: AppTextStyles.displayLarge,
                       ),
-                      const SizedBox(height: 8),
+
+                      const SizedBox(height: AppSpacing.sm),
+
                       Text(
                         "Find your tribe and thrive across campuses.",
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 16,
-                        ),
+                        style: AppTextStyles.bodyMedium,
                       ),
-                      const SizedBox(height: 20),
-                      Container(
-                        height: 55,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: const TextField(
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search),
-                            hintText:
-                                "Search clubs, societies, or interests...",
-                            border: InputBorder.none,
-                            contentPadding:
-                                EdgeInsets.symmetric(vertical: 16),
+
+                      const SizedBox(height: AppSpacing.xl),
+
+                      // SEARCH
+                      TextField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.search),
+                          hintText:
+                              "Search clubs, societies, or interests...",
+                          filled: true,
+                          fillColor: AppColors.white,
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.circular(AppRadius.input),
+                            borderSide: BorderSide.none,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+
+                      const SizedBox(height: AppSpacing.xl),
+
+                      // TABS
                       TabBar(
                         controller: _tabController,
-                        indicatorColor: primaryColor,
-                        labelColor: primaryColor,
-                        unselectedLabelColor: Colors.black54,
+                        indicatorColor: AppColors.primary,
+                        labelColor: AppColors.primary,
+                        unselectedLabelColor: AppColors.textMuted,
+                        labelStyle: AppTextStyles.labelMedium,
                         tabs: const [
                           Tab(text: "All Clubs"),
                           Tab(text: "My Clubs"),
                         ],
                       ),
-                      const SizedBox(height: 20),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: communities.length,
-                        itemBuilder: (context, index) {
-                          final club = communities[index];
 
-                          return CommunityCard(
-                            name: club["name"],
-                            members: club["members"],
-                            description: club["description"],
-                            category: club["category"],
-                            joined: club["joined"],
-                            icon: club["icon"],
-                            color: club["color"],
-                          );
-                        },
+                      const SizedBox(height: AppSpacing.xl),
+
+                      // EMPTY STATE + LIST ANIMATION
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: data.isEmpty
+                            ? const EmptyState()
+                            : ListView.builder(
+                                key: ValueKey(data.length),
+                                shrinkWrap: true,
+                                physics:
+                                    const NeverScrollableScrollPhysics(),
+                                itemCount: data.length,
+                                itemBuilder: (context, index) {
+                                  final club = data[index];
+
+                                  return CommunityCard(
+                                    name: club["name"],
+                                    members: club["members"],
+                                    description: club["description"],
+                                    category: club["category"],
+                                    joined: club["joined"],
+                                    icon: club["icon"],
+                                    color: club["color"],
+                                    onJoinToggle: () =>
+                                        toggleJoin(club["name"]),
+                                  );
+                                },
+                              ),
                       ),
-                      const SizedBox(height: 20),
+
+                      const SizedBox(height: AppSpacing.lg),
                     ],
                   ),
                 ),
@@ -161,6 +225,40 @@ class _CommunitiesScreenState extends State<CommunitiesScreen>
   }
 }
 
+// ─────────────────────────────────────────────
+// EMPTY STATE (UX UPGRADE)
+// ─────────────────────────────────────────────
+class EmptyState extends StatelessWidget {
+  const EmptyState({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 60),
+      child: Column(
+        children: [
+          Icon(Icons.search_off,
+              size: 60, color: AppColors.textMuted),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            "No communities found",
+            style: AppTextStyles.headingSmall,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            "Try adjusting your search or explore all clubs.",
+            style: AppTextStyles.bodySmall,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────
+// COMMUNITY CARD (UNCHANGED UI, CLEAN LOGIC)
+// ─────────────────────────────────────────────
 class CommunityCard extends StatelessWidget {
   final String name;
   final int members;
@@ -169,6 +267,7 @@ class CommunityCard extends StatelessWidget {
   final bool joined;
   final IconData icon;
   final Color color;
+  final VoidCallback onJoinToggle;
 
   const CommunityCard({
     super.key,
@@ -179,16 +278,18 @@ class CommunityCard extends StatelessWidget {
     required this.joined,
     required this.icon,
     required this.color,
+    required this.onJoinToggle,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 18),
-      padding: const EdgeInsets.all(18),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        boxShadow: AppShadows.card,
       ),
       child: Column(
         children: [
@@ -198,105 +299,88 @@ class CommunityCard extends StatelessWidget {
                 width: 58,
                 height: 58,
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(14),
+                  color: color.withOpacity(0.12),
+                  borderRadius:
+                      BorderRadius.circular(AppRadius.statTile),
                 ),
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 28,
-                ),
+                child: Icon(icon, color: color, size: 28),
               ),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20),
+                  color: color.withOpacity(0.12),
+                  borderRadius:
+                      BorderRadius.circular(AppRadius.badge),
                 ),
                 child: Text(
                   category,
-                  style: TextStyle(
+                  style: AppTextStyles.labelSmall.copyWith(
                     color: color,
-                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+
+          const SizedBox(height: AppSpacing.lg),
+
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              name,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            child: Text(name,
+                style: AppTextStyles.headingMedium),
           ),
-          const SizedBox(height: 6),
+
+          const SizedBox(height: AppSpacing.xs),
+
           Row(
             children: [
-              const Icon(Icons.groups_2_outlined, size: 16),
-              const SizedBox(width: 5),
-              Text(
-                "$members Members",
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              const Icon(Icons.groups_2_outlined,
+                  size: 16, color: AppColors.textMuted),
+              const SizedBox(width: 6),
+              Text("$members Members",
+                  style: AppTextStyles.bodySmall),
             ],
           ),
-          const SizedBox(height: 14),
+
+          const SizedBox(height: AppSpacing.md),
+
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              description,
-              style: TextStyle(
-                color: Colors.grey.shade700,
-                height: 1.4,
-              ),
-            ),
+            child: Text(description,
+                style: AppTextStyles.bodyMedium),
           ),
-          const SizedBox(height: 18),
+
+          const SizedBox(height: AppSpacing.lg),
+
           Row(
             children: [
               Expanded(
-                child: SizedBox(
-                  height: 48,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: joined
-                          ? const Color(0xFFDCE2FF)
-                          : const Color(0xFF4F46E5),
-                      foregroundColor: joined
-                          ? const Color(0xFF4F46E5)
-                          : Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      joined ? "✓ Joined" : "Join",
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                child: ElevatedButton(
+                  onPressed: onJoinToggle,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: joined
+                        ? AppColors.primaryLight
+                        : AppColors.primary,
+                    foregroundColor: joined
+                        ? AppColors.primary
+                        : AppColors.white,
                   ),
+                  child: Text(joined ? "✓ Joined" : "Join"),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Container(
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.grey.shade300,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
+                      color: AppColors.cardBorder),
+                  borderRadius:
+                      BorderRadius.circular(AppRadius.button),
                 ),
                 child: IconButton(
                   icon: const Icon(Icons.share_outlined),
