@@ -9,6 +9,7 @@ import 'package:formative_assignment1/ui/screens/chats_screen.dart';
 import 'package:formative_assignment1/ui/screens/profile_screen.dart';
 import 'package:formative_assignment1/ui/screens/post_details_screen.dart';
 import 'package:formative_assignment1/ui/screens/RSVP_screen.dart';
+import 'package:formative_assignment1/ui/screens/communities_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -54,6 +55,8 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => const ProfileScreen(), settings: settings);
           case '/rsvp':
             return MaterialPageRoute(builder: (_) => const RSVP(), settings: settings);
+          case '/communities':
+            return MaterialPageRoute(builder: (_) => const CommunitiesScreen(), settings: settings);
           case '/post-details':
             final eventId = settings.arguments as String? ?? '';
             return MaterialPageRoute(

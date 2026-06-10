@@ -7,27 +7,12 @@ class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
 
   static const _items = [
-    _NavItemData(icon: Icons.home_outlined, label: 'Home', route: '/home'),
-    _NavItemData(
-      icon: Icons.explore_outlined,
-      label: 'Explore',
-      route: '/explore',
-    ),
-    _NavItemData(
-      icon: Icons.add_circle_outline,
-      label: 'Create',
-      route: '/create',
-    ),
-    _NavItemData(
-      icon: Icons.chat_bubble_outline,
-      label: 'Chats',
-      route: '/chats',
-    ),
-    _NavItemData(
-      icon: Icons.person_outline,
-      label: 'Profile',
-      route: '/profile',
-    ),
+    _NavItemData(icon: Icons.home_outlined,        label: 'Home',        route: '/home'),
+    _NavItemData(icon: Icons.explore_outlined,     label: 'Explore',     route: '/explore'),
+    _NavItemData(icon: Icons.add_circle_outline,   label: 'Create',      route: '/create'),
+    _NavItemData(icon: Icons.chat_bubble_outline,  label: 'Chats',       route: '/chats'),
+    _NavItemData(icon: Icons.person_outline,       label: 'Profile',     route: '/profile'),
+    _NavItemData(icon: Icons.group_outlined,       label: 'Communities', route: '/communities'),
   ];
 
   @override
@@ -58,23 +43,21 @@ class AppBottomNavBar extends StatelessWidget {
   }
 }
 
+// ── Data ──────────────────────────────────────────────────────────────────────
+
 class _NavItemData {
-  const _NavItemData({
-    required this.icon,
-    required this.label,
-    required this.route,
-  });
+  const _NavItemData(
+      {required this.icon, required this.label, required this.route});
   final IconData icon;
   final String label;
   final String route;
 }
 
+// ── Single item ───────────────────────────────────────────────────────────────
+
 class _NavItem extends StatelessWidget {
-  const _NavItem({
-    required this.data,
-    required this.selected,
-    required this.onTap,
-  });
+  const _NavItem(
+      {required this.data, required this.selected, required this.onTap});
 
   final _NavItemData data;
   final bool selected;
