@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.light,
       initialRoute: '/',
       routes: {
-        '/':    (_) => const HomeScreen(),
+        '/':        (_) => const HomeScreen(),
         '/explore': (_) => const ExploreScreen(),
         '/create':  (_) => const CreateScreen(),
         '/chats':   (_) => const ChatsScreen(),
