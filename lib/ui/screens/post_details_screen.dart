@@ -73,7 +73,9 @@ class PostDetailsScreen extends StatelessWidget {
                     // Attendee avatars
                     if (event.attendeeIds.isNotEmpty)
                       _AttendeesRow(
-                          users: attendeeUsers, extraCount: extraCount),
+                        users: attendeeUsers,
+                        extraCount: extraCount,
+                      ),
                     if (event.attendeeIds.isNotEmpty)
                       const SizedBox(height: AppSpacing.lg),
 
@@ -101,11 +103,9 @@ class PostDetailsScreen extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xl),
 
                     // About
-                    Text('About the Event',
-                        style: AppTextStyles.headingSmall),
+                    Text('About the Event', style: AppTextStyles.headingSmall),
                     const SizedBox(height: AppSpacing.sm),
-                    Text(event.description,
-                        style: AppTextStyles.bodyMedium),
+                    Text(event.description, style: AppTextStyles.bodyMedium),
                     const SizedBox(height: AppSpacing.xl),
 
                     // Speaker card
@@ -250,8 +250,7 @@ class _TagChip extends StatelessWidget {
     final bg = _bgColors[index % _bgColors.length];
     final fg = _textColors[index % _textColors.length];
     return Container(
-      padding:
-          const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(AppRadius.full),
@@ -332,8 +331,7 @@ class _AttendeesRow extends StatelessWidget {
         const SizedBox(width: AppSpacing.sm),
         Text(
           'Attending this event',
-          style: AppTextStyles.bodySmall
-              .copyWith(color: AppColors.textMedium),
+          style: AppTextStyles.bodySmall.copyWith(color: AppColors.textMedium),
         ),
       ],
     );
@@ -424,7 +422,9 @@ class _SpeakerCard extends StatelessWidget {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.xl, horizontal: AppSpacing.lg),
+          vertical: AppSpacing.xl,
+          horizontal: AppSpacing.lg,
+        ),
         decoration: BoxDecoration(
           color: AppColors.primaryLight,
           borderRadius: BorderRadius.circular(AppRadius.md),
@@ -470,8 +470,9 @@ class _SpeakerCard extends StatelessWidget {
               ),
               child: Text(
                 'View Profile',
-                style: AppTextStyles.labelMedium
-                    .copyWith(color: AppColors.primary),
+                style: AppTextStyles.labelMedium.copyWith(
+                  color: AppColors.primary,
+                ),
               ),
             ),
           ],
@@ -523,5 +524,6 @@ class _DashedRectPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_DashedRectPainter old) => old.color != color;
+  bool shouldRepaint(_DashedRectPainter old) =>
+      old.color != color || old.radius != radius;
 }

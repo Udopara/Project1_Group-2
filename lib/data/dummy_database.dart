@@ -65,6 +65,7 @@ class EventModel {
   final int maxAttendees;
   final List<String> attendeeIds;
   final bool isPublic;
+  final String rsvpStatus; // "going" | "interested"
   final Map<String, dynamic> metadata;
 
   const EventModel({
@@ -82,6 +83,7 @@ class EventModel {
     required this.maxAttendees,
     required this.attendeeIds,
     required this.isPublic,
+    required this.rsvpStatus,
     required this.metadata,
   });
 }
@@ -375,7 +377,7 @@ class DummyDatabase {
       leaderId: 'usr_002',
       category: ClubCategory.tech,
       campus: 'Kigali Campus',
-      logoUrl: 'https://i.pravatar.cc/150?img=10',
+      logoUrl: 'https://ui-avatars.com/api/?name=Tech+Innovators&background=4648D4&color=fff&size=150&bold=true&rounded=true',
       memberIds: ['usr_001', 'usr_002', 'usr_004'],
       eventIds: ['evt_001', 'evt_003'],
       isVerified: true,
@@ -397,7 +399,7 @@ class DummyDatabase {
       leaderId: 'usr_002',
       category: ClubCategory.business,
       campus: 'Kigali Campus',
-      logoUrl: 'https://i.pravatar.cc/150?img=20',
+      logoUrl: 'https://ui-avatars.com/api/?name=Entrepreneurs+Hub&background=B90538&color=fff&size=150&bold=true&rounded=true',
       memberIds: ['usr_002', 'usr_005'],
       eventIds: ['evt_002'],
       isVerified: true,
@@ -419,7 +421,7 @@ class DummyDatabase {
       leaderId: 'usr_003',
       category: ClubCategory.social,
       campus: 'Huye Campus',
-      logoUrl: 'https://i.pravatar.cc/150?img=30',
+      logoUrl: 'https://ui-avatars.com/api/?name=Health+Wellness&background=00885D&color=fff&size=150&bold=true&rounded=true',
       memberIds: ['usr_001', 'usr_003'],
       eventIds: ['evt_004', 'evt_005'],
       isVerified: false,
@@ -450,10 +452,11 @@ class DummyDatabase {
       campus: 'Kigali Campus',
       startDate: DateTime(2024, 12, 5, 9, 0),
       endDate: DateTime(2024, 12, 5, 17, 0),
-      bannerUrl: 'https://picsum.photos/seed/evt1/600/300',
+      bannerUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=300&fit=crop',
       maxAttendees: 300,
       attendeeIds: ['usr_001', 'usr_002', 'usr_004'],
       isPublic: true,
+      rsvpStatus: 'going',
       metadata: {
         'createdAt': '2024-10-01T00:00:00Z',
         'updatedAt': '2024-11-01T00:00:00Z',
@@ -475,10 +478,11 @@ class DummyDatabase {
       campus: 'Kigali Campus',
       startDate: DateTime(2024, 12, 12, 18, 0),
       endDate: DateTime(2024, 12, 12, 21, 0),
-      bannerUrl: 'https://picsum.photos/seed/evt2/600/300',
+      bannerUrl: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&h=300&fit=crop',
       maxAttendees: 100,
       attendeeIds: ['usr_001', 'usr_003'],
       isPublic: true,
+      rsvpStatus: 'interested',
       metadata: {
         'createdAt': '2024-10-15T00:00:00Z',
         'updatedAt': '2024-11-05T00:00:00Z',
@@ -500,10 +504,11 @@ class DummyDatabase {
       campus: 'Kigali Campus',
       startDate: DateTime(2025, 1, 10, 8, 0),
       endDate: DateTime(2025, 1, 12, 8, 0),
-      bannerUrl: 'https://picsum.photos/seed/evt3/600/300',
+      bannerUrl: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&h=300&fit=crop',
       maxAttendees: 120,
       attendeeIds: ['usr_002', 'usr_004'],
       isPublic: true,
+      rsvpStatus: 'going',
       metadata: {
         'createdAt': '2024-11-01T00:00:00Z',
         'updatedAt': '2024-11-18T00:00:00Z',
@@ -525,10 +530,11 @@ class DummyDatabase {
       campus: 'Huye Campus',
       startDate: DateTime(2024, 11, 25, 9, 0),
       endDate: DateTime(2024, 11, 29, 17, 0),
-      bannerUrl: 'https://picsum.photos/seed/evt4/600/300',
+      bannerUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=300&fit=crop',
       maxAttendees: 500,
       attendeeIds: ['usr_003'],
       isPublic: true,
+      rsvpStatus: 'interested',
       metadata: {
         'createdAt': '2024-10-20T00:00:00Z',
         'updatedAt': '2024-11-10T00:00:00Z',
@@ -550,10 +556,11 @@ class DummyDatabase {
       campus: 'Kigali Campus',
       startDate: DateTime(2024, 12, 20, 19, 0),
       endDate: DateTime(2024, 12, 20, 23, 59),
-      bannerUrl: 'https://picsum.photos/seed/evt5/600/300',
+      bannerUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&h=300&fit=crop',
       maxAttendees: 600,
       attendeeIds: ['usr_001', 'usr_004'],
       isPublic: true,
+      rsvpStatus: 'going',
       metadata: {
         'createdAt': '2024-09-01T00:00:00Z',
         'updatedAt': '2024-11-15T00:00:00Z',
@@ -603,7 +610,7 @@ class DummyDatabase {
       authorId: 'usr_002',
       content: 'Excited to announce the Startup Pitch Night on Dec 12! Register now.',
       type: PostType.announcement,
-      imageUrls: ['https://picsum.photos/seed/pst2/600/400'],
+      imageUrls: ['https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&h=400&fit=crop'],
       likeIds: ['usr_001', 'usr_005'],
       comments: [],
       clubId: 'clb_002',
@@ -624,8 +631,8 @@ class DummyDatabase {
       content: 'Campus life hits different in November. The weather, the vibe, everything.',
       type: PostType.image,
       imageUrls: [
-        'https://picsum.photos/seed/pst3a/600/400',
-        'https://picsum.photos/seed/pst3b/600/400',
+        'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&h=400&fit=crop',
+        'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&h=400&fit=crop',
       ],
       likeIds: ['usr_003', 'usr_004'],
       comments: [

@@ -12,200 +12,201 @@ class CreateScreen extends StatefulWidget {
 }
 
 class _CreateScreenState extends State<CreateScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _locationController = TextEditingController();
-  final _campusController = TextEditingController(text: 'Kigali Campus');
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
-  EventCategory _category = EventCategory.academic;
+  String _selectedCategory = 'Event';
+  final List<String> _categories = ['Event', 'Opportunity'];
 
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
-    _locationController.dispose();
-    _campusController.dispose();
     super.dispose();
+  }
+
+  void _submitPost() {
+    if (_titleController.text.trim().isEmpty ||
+        _descriptionController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please fill out all required fields.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    final authorId = Session.currentUser?.id ?? 'usr_001';
+    final now = DateTime.now();
+    final post = PostModel(
+      id: 'pst_${now.millisecondsSinceEpoch}',
+      authorId: authorId,
+      content:
+          '${_titleController.text.trim()}\n\n${_descriptionController.text.trim()}',
+      type: _selectedCategory == 'Event'
+          ? PostType.announcement
+          : PostType.text,
+      imageUrls: [],
+      likeIds: [],
+      comments: [],
+      isPinned: false,
+      createdAt: now,
+      updatedAt: now,
+      metadata: {
+        'views': 0,
+        'shares': 0,
+        'isReported': false,
+        'tags': [_selectedCategory.toLowerCase()],
+      },
+    );
+
+    DummyDatabase.posts.add(post);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Your post has been successfully shared!'),
+        backgroundColor: AppColors.success,
+      ),
+    );
+
+    _titleController.clear();
+    _descriptionController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
+
       appBar: AppBar(
-        title: const Text('Create Event'),
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: AppColors.white,
+        elevation: 1,
+        automaticallyImplyLeading: false,
+        title: Text('Create Post', style: AppTextStyles.headingLarge),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Add an event', style: AppTextStyles.headingLarge),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  'Create a campus agenda item for students to discover.',
-                  style: AppTextStyles.bodyMedium,
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                _LabeledField(
-                  label: 'Event title',
-                  child: TextFormField(
-                    controller: _titleController,
-                    decoration: const InputDecoration(
-                      hintText: 'e.g. Career Mixer',
-                    ),
-                    validator: _required,
+
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Cover Image Container
+            Container(
+              width: double.infinity,
+              height: 140,
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(AppRadius.card),
+                border: Border.all(color: AppColors.cardBorder, width: 2),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.add_photo_alternate_outlined,
+                    color: AppColors.primary,
+                    size: 36,
                   ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _LabeledField(
-                  label: 'Description',
-                  child: TextFormField(
-                    controller: _descriptionController,
-                    minLines: 4,
-                    maxLines: 5,
-                    decoration: const InputDecoration(
-                      hintText: 'What should students know?',
-                    ),
-                    validator: _required,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _LabeledField(
-                  label: 'Location',
-                  child: TextFormField(
-                    controller: _locationController,
-                    decoration: const InputDecoration(
-                      hintText: 'e.g. Innovation Hub',
-                    ),
-                    validator: _required,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _LabeledField(
-                  label: 'Campus',
-                  child: TextFormField(
-                    controller: _campusController,
-                    decoration: const InputDecoration(
-                      hintText: 'e.g. Kigali Campus',
-                    ),
-                    validator: _required,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _LabeledField(
-                  label: 'Category',
-                  child: DropdownButtonFormField<EventCategory>(
-                    value: _category,
-                    decoration: const InputDecoration(),
-                    items: EventCategory.values
-                        .map(
-                          (category) => DropdownMenuItem(
-                            value: category,
-                            child: Text(_categoryLabel(category)),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() => _category = value);
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: _submit,
-                    icon: const Icon(Icons.add_rounded),
-                    label: const Text('Add Event'),
-                  ),
-                ),
-              ],
+                  const SizedBox(height: AppSpacing.sm),
+                  Text('Add a cover image', style: AppTextStyles.bodySmall),
+                ],
+              ),
             ),
-          ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // Input: TITLE
+            Text('Post Title', style: AppTextStyles.headingSmall),
+            const SizedBox(height: AppSpacing.sm),
+            TextField(
+              controller: _titleController,
+              style: TextStyle(color: AppColors.textDark),
+              decoration: InputDecoration(
+                hintText: "e.g., Leadership Workshop, Roommate Wanted...",
+                hintStyle: TextStyle(color: AppColors.textMuted),
+                filled: true,
+                fillColor: AppColors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.input),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // Input: CATEGORY
+            Text('Category', style: AppTextStyles.headingSmall),
+            const SizedBox(height: AppSpacing.sm),
+            DropdownButtonFormField<String>(
+              initialValue: _selectedCategory,
+              dropdownColor: AppColors.white,
+              style: TextStyle(color: AppColors.textDark, fontSize: 16),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.input),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              items: _categories.map((String cat) {
+                return DropdownMenuItem<String>(value: cat, child: Text(cat));
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedCategory = newValue!;
+                });
+              },
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // Input: DESCRIPTION
+            Text('Description', style: AppTextStyles.headingSmall),
+            const SizedBox(height: AppSpacing.sm),
+            TextField(
+              controller: _descriptionController,
+              maxLines: 4,
+              style: TextStyle(color: AppColors.textDark),
+              decoration: InputDecoration(
+                hintText: "Tell the campus more about this...",
+                hintStyle: TextStyle(color: AppColors.textMuted),
+                filled: true,
+                fillColor: AppColors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.input),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xxl),
+
+            // Submit Button
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton(
+                onPressed: _submitPost,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.button),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  'Publish Post',
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: AppColors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
+
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
-    );
-  }
-
-  String? _required(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Required';
-    }
-    return null;
-  }
-
-  void _submit() {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    final now = DateTime.now();
-    final currentUser = Session.currentUser;
-    DummyDatabase.events.add(
-      EventModel(
-        id: 'evt_${now.microsecondsSinceEpoch}',
-        title: _titleController.text.trim(),
-        description: _descriptionController.text.trim(),
-        organizerId: currentUser?.id ?? 'usr_001',
-        clubId: currentUser?.clubIds.isNotEmpty == true
-            ? currentUser!.clubIds.first
-            : 'clb_001',
-        category: _category,
-        location: _locationController.text.trim(),
-        campus: _campusController.text.trim(),
-        startDate: now.add(const Duration(days: 1)),
-        endDate: now.add(const Duration(days: 1, hours: 2)),
-        bannerUrl: 'https://picsum.photos/seed/${now.microsecondsSinceEpoch}/600/300',
-        maxAttendees: 100,
-        attendeeIds: const [],
-        isPublic: true,
-        metadata: {
-          'createdAt': now.toIso8601String(),
-          'updatedAt': now.toIso8601String(),
-          'tags': [_categoryLabel(_category).toLowerCase()],
-          'isFeatured': false,
-          'registrationDeadline':
-              now.add(const Duration(days: 1)).toIso8601String(),
-          'ticketPrice': 0.0,
-          'currency': 'RWF',
-        },
-      ),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Event added.')),
-    );
-    Navigator.pushReplacementNamed(context, '/');
-  }
-}
-
-class _LabeledField extends StatelessWidget {
-  const _LabeledField({
-    required this.label,
-    required this.child,
-  });
-
-  final String label;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: AppTextStyles.labelMedium),
-        const SizedBox(height: AppSpacing.sm),
-        child,
-      ],
     );
   }
 }

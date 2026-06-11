@@ -38,21 +38,30 @@ class _RegisterState extends State<Register> {
         elevation: 0,
         title: Row(
           children: [
-            SizedBox(
+            Container(
               width: 40,
               height: 40,
-              child: ClipRRect(
+              decoration: BoxDecoration(
+                color: AppColors.primary,
                 borderRadius: BorderRadius.circular(AppRadius.sm),
-                child: Image.asset(
-                  'assets/images/alu_logo.webp',
-                  fit: BoxFit.contain,
+              ),
+              child: const Center(
+                child: Text(
+                  "A",
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
             SizedBox(width: AppSpacing.md),
             Text(
               "ALU Intercampus",
-              style: AppTextStyles.headingSmall.copyWith(color: AppColors.primary),
+              style: AppTextStyles.headingSmall.copyWith(
+                color: AppColors.primary,
+              ),
             ),
           ],
         ),
@@ -66,7 +75,9 @@ class _RegisterState extends State<Register> {
               SizedBox(
                 width: 400,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
                   child: Column(
                     children: [
                       Stack(
@@ -106,11 +117,14 @@ class _RegisterState extends State<Register> {
                             TextFormField(
                               controller: emailController,
                               keyboardType: TextInputType.emailAddress,
-                              validator: (v) =>
-                                  (v == null || v.trim().isEmpty) ? 'Please enter your email' : null,
+                              validator: (v) => (v == null || v.trim().isEmpty)
+                                  ? 'Please enter your email'
+                                  : null,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(AppRadius.input),
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.input,
+                                  ),
                                 ),
                                 prefixIcon: const Icon(
                                   Icons.email_outlined,
@@ -130,11 +144,14 @@ class _RegisterState extends State<Register> {
                             TextFormField(
                               obscureText: _obscurePassword,
                               controller: passwordController,
-                              validator: (v) =>
-                                  (v == null || v.isEmpty) ? 'Please enter your password' : null,
+                              validator: (v) => (v == null || v.isEmpty)
+                                  ? 'Please enter your password'
+                                  : null,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(AppRadius.input),
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.input,
+                                  ),
                                 ),
                                 prefixIcon: const Icon(
                                   Icons.lock_outline,
@@ -187,20 +204,29 @@ class _RegisterState extends State<Register> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             foregroundColor: AppColors.white,
-                            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.md,
+                            ),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(AppRadius.button),
+                              borderRadius: BorderRadius.circular(
+                                AppRadius.button,
+                              ),
                             ),
                           ),
-                          child: Text("Login", style: AppTextStyles.labelMedium.copyWith(
-                            color: AppColors.white,
-                          )),
+                          child: Text(
+                            "Login",
+                            style: AppTextStyles.labelMedium.copyWith(
+                              color: AppColors.white,
+                            ),
+                          ),
                         ),
                       ),
                       SizedBox(height: AppSpacing.lg),
                       Text(
                         "—— or continue with ——",
-                        style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textMuted),
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textMuted,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: AppSpacing.lg),
@@ -209,8 +235,14 @@ class _RegisterState extends State<Register> {
                         children: [
                           OutlinedButton.icon(
                             onPressed: () {},
-                            icon: const Icon(Icons.login, color: AppColors.primary),
-                            label: Text("Google", style: AppTextStyles.labelMedium),
+                            icon: const Icon(
+                              Icons.login,
+                              color: AppColors.primary,
+                            ),
+                            label: Text(
+                              "Google",
+                              style: AppTextStyles.labelMedium,
+                            ),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.xl,
