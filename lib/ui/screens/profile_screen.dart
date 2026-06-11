@@ -230,7 +230,7 @@ class _ChatAppBar extends StatelessWidget {
                           ? Image.network(
                               avatarUrl!,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) =>
+                              errorBuilder: (_, _, _) =>
                                   _initials(avatarInitial),
                             )
                           : _initials(avatarInitial),
@@ -421,7 +421,7 @@ class _MessageBubble extends StatelessWidget {
                         width: 220,
                         height: 150,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
+                        errorBuilder: (_, _, _) => Container(
                           width: 220,
                           height: 150,
                           color: AppColors.primaryLight,
@@ -659,4 +659,87 @@ class _StatusIcon extends StatelessWidget {
         indent: AppSpacing.lg,
         endIndent: AppSpacing.lg,
       );
+}
+
+class _MessageInputBar extends StatelessWidget {
+  final TextEditingController controller;
+  final VoidCallback onSend;
+
+  const _MessageInputBar({
+    required this.controller,
+    required this.onSend,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        border: Border(top: BorderSide(color: AppColors.cardBorder)),
+      ),
+      padding: EdgeInsets.only(
+        left: AppSpacing.lg,
+        right: AppSpacing.lg,
+        top: AppSpacing.sm,
+        bottom: AppSpacing.sm + MediaQuery.of(context).viewPadding.bottom,
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.attach_file_rounded),
+            color: AppColors.textMuted,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 44),
+              decoration: BoxDecoration(
+                color: AppColors.primaryLight,
+                borderRadius: BorderRadius.circular(AppRadius.input),
+              ),
+              child: TextField(
+                controller: controller,
+                minLines: 1,
+                maxLines: 4,
+                style: AppTextStyles.bodyMedium,
+                decoration: InputDecoration(
+                  hintText: 'Type a message...',
+                  hintStyle: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textMuted,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
+                ),
+                onSubmitted: (_) => onSend(),
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          GestureDetector(
+            onTap: onSend,
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+                boxShadow: AppShadows.card,
+              ),
+              child: const Icon(
+                Icons.send_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -30,19 +30,115 @@ class _HomeScreenState extends State<HomeScreen> {
     Icons.school_rounded,
   ];
 
+  List<_AgendaItem> get _agendaItems {
+    final eventItems = DummyDatabase.events.map(_AgendaItem.fromEvent).toList();
+    final clubItems = DummyDatabase.clubs.map(_AgendaItem.fromClub).toList();
+
+    return switch (_categories[_selectedCategory]) {
+      'Events' => eventItems,
+      'Opportunities' => _opportunityItems,
+      'Clubs' => clubItems,
+      'Academic' => _academicItems,
+      _ => [
+          ...eventItems,
+          ..._opportunityItems,
+          ...clubItems,
+          ..._academicItems,
+        ],
+    };
+  }
+
+  List<_AgendaItem> get _opportunityItems => const [
+        _AgendaItem(
+          icon: '🌿',
+          iconBg: Color(0xFFE8F5E9),
+          title: 'Sustainable Solutions Challenge',
+          subtitle: 'Apply by May 20, 2026',
+          campus: 'Mauritius Campus',
+          tag: 'COMPETITION',
+          tagColor: AppColors.error,
+          tagBg: Color(0xFFFFEBEE),
+          details:
+              'Student teams can submit climate, energy, waste, and food-system ideas for judging. Shortlisted teams receive mentor office hours, pitch practice, prototype feedback, and a chance to present to campus partners.',
+        ),
+        _AgendaItem(
+          icon: '🎓',
+          iconBg: Color(0xFFE3F2FD),
+          title: 'Campus Ambassador Program',
+          subtitle: 'Apply by June 05, 2026',
+          campus: 'Remote / Hybrid',
+          tag: 'ROLE',
+          tagColor: AppColors.primary,
+          tagBg: AppColors.primaryLight,
+          details:
+              'Ambassadors support student onboarding, community announcements, and intercampus activity promotion. Selected students join training and receive weekly responsibilities across events and digital channels.',
+        ),
+        _AgendaItem(
+          icon: '🔬',
+          iconBg: Color(0xFFF3E5F5),
+          title: 'AI Research Fellowship',
+          subtitle: 'Apply by July 12, 2026',
+          campus: 'Kigali Campus',
+          tag: 'GRANT',
+          tagColor: AppColors.success,
+          tagBg: Color(0xFFE8F5E9),
+          details:
+              'The fellowship pairs students with faculty-led AI projects in education, health, and entrepreneurship. Applicants should share a statement, coursework, and one project sample or research interest.',
+        ),
+      ];
+
+  List<_AgendaItem> get _academicItems => const [
+        _AgendaItem(
+          icon: '📚',
+          iconBg: Color(0xFFE3F2FD),
+          title: 'Capstone Clinic',
+          subtitle: 'Today, 10:00 AM - 12:00 PM',
+          campus: 'Learning Commons',
+          tag: 'ACADEMIC',
+          tagColor: AppColors.primary,
+          tagBg: AppColors.primaryLight,
+          details:
+              'Final-year students can bring research questions, prototype blockers, and presentation drafts. Faculty mentors rotate through tables for feedback on scope, evidence, and next milestones.',
+        ),
+        _AgendaItem(
+          icon: '🧠',
+          iconBg: Color(0xFFF3E5F5),
+          title: 'Data Structures Study Lab',
+          subtitle: 'Today, 2:00 PM - 4:00 PM',
+          campus: 'Computer Lab 1',
+          tag: 'STUDY',
+          tagColor: AppColors.success,
+          tagBg: Color(0xFFE8F5E9),
+          details:
+              'A guided study block covering trees, graphs, complexity analysis, and exam-style problem solving. Peer tutors run short examples before students break into practice groups.',
+        ),
+        _AgendaItem(
+          icon: '✍️',
+          iconBg: Color(0xFFFFEBEE),
+          title: 'Writing Center Drop-in',
+          subtitle: 'Today, 3:30 PM - 5:30 PM',
+          campus: 'Academic Support Desk',
+          tag: 'SUPPORT',
+          tagColor: AppColors.error,
+          tagBg: Color(0xFFFFEBEE),
+          details:
+              'Students can review essays, lab reports, and reflective assignments with writing coaches. Bring a rubric, draft, or outline for focused support.',
+        ),
+      ];
+
   @override
   Widget build(BuildContext context) {
     final user = Session.currentUser;
     final firstName = user?.fullName.split(' ').first ?? 'Student';
     final events = DummyDatabase.events;
-    final featuredEvent = events.isNotEmpty ? events[1] : null; // Pitch Night
+    final featuredEvent = events.isNotEmpty ? events[1] : null;
+    final agendaItems = _agendaItems;
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: SafeArea(
         child: Column(
           children: [
-            // ── Top App Bar ──────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.lg,
@@ -52,34 +148,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Row(
                 children: [
-                  // Avatar + org name
-                  Container(
+                  SizedBox(
                     width: 36,
                     height: 36,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.primary,
-                      boxShadow: AppShadows.avatar,
-                    ),
-                    child: ClipOval(
-                      child: user?.avatarUrl != null
-                          ? Image.network(
-                              user!.avatarUrl!,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => _avatarFallback(
-                                firstName,
-                              ),
-                            )
-                          : _avatarFallback(firstName),
+                    child: Image.asset(
+                      'assets/images/alu_logo.webp',
+                      fit: BoxFit.contain,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    'ALU Intercampus',
-                    style: AppTextStyles.headingSmall,
-                  ),
+                  Text('ALU Intercampus', style: AppTextStyles.headingSmall),
                   const Spacer(),
-                  // Notification bell
                   Stack(
                     children: [
                       IconButton(
@@ -113,19 +192,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-
-            // ── Scrollable body ──────────────────────────────────────
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: AppSpacing.md),
-
-                    // ── Greeting ─────────────────────────────────────
                     Row(
                       children: [
                         Text(
@@ -141,8 +214,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: AppTextStyles.bodyMedium,
                     ),
                     const SizedBox(height: AppSpacing.lg),
-
-                    // ── Search bar ───────────────────────────────────
                     Container(
                       height: 48,
                       decoration: BoxDecoration(
@@ -161,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           const SizedBox(width: AppSpacing.sm),
                           Text(
-                            'Search opportunities, events, people…',
+                            'Search opportunities, events, people...',
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: AppColors.textMuted,
                             ),
@@ -170,14 +241,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
-
-                    // ── Category chips ───────────────────────────────
                     SizedBox(
                       height: 72,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: _categories.length,
-                        separatorBuilder: (_, __) =>
+                        separatorBuilder: (_, _) =>
                             const SizedBox(width: AppSpacing.sm),
                         itemBuilder: (context, i) {
                           final selected = _selectedCategory == i;
@@ -232,8 +301,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xl),
-
-                    // ── Featured section ─────────────────────────────
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -255,50 +322,37 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     const SizedBox(height: AppSpacing.md),
-
-                    // Featured event card
                     if (featuredEvent != null)
                       _FeaturedEventCard(event: featuredEvent),
                     const SizedBox(height: AppSpacing.xl),
-
-                    // ── Latest Opportunities ─────────────────────────
-                    Text(
-                      'Latest Opportunities',
-                      style: AppTextStyles.headingMedium,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${_categories[_selectedCategory]} Agenda',
+                          style: AppTextStyles.headingMedium,
+                        ),
+                        Text(
+                          '${agendaItems.length} items',
+                          style: AppTextStyles.caption,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: AppSpacing.md),
-
-                    _OpportunityTile(
-                      icon: '🌿',
-                      iconBg: const Color(0xFFE8F5E9),
-                      title: 'Sustainable Solutions Challenge',
-                      subtitle: 'Apply by May 20, 2026',
-                      campus: 'Mauritius Campus',
-                      tag: 'COMPETITION',
-                      tagColor: AppColors.error,
-                      tagBg: const Color(0xFFFFEBEE),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    _OpportunityTile(
-                      icon: '🎓',
-                      iconBg: const Color(0xFFE3F2FD),
-                      title: 'Campus Ambassador Program',
-                      subtitle: 'Apply by June 05, 2026',
-                      campus: 'Remote / Hybrid',
-                      tag: 'ROLE',
-                      tagColor: AppColors.primary,
-                      tagBg: AppColors.primaryLight,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    _OpportunityTile(
-                      icon: '🔬',
-                      iconBg: const Color(0xFFF3E5F5),
-                      title: 'AI Research Fellowship',
-                      subtitle: 'Apply by July 12, 2026',
-                      campus: 'Kigali Campus',
-                      tag: 'GRANT',
-                      tagColor: AppColors.success,
-                      tagBg: const Color(0xFFE8F5E9),
+                    SizedBox(
+                      height: 430,
+                      child: ListView.separated(
+                        itemCount: agendaItems.length,
+                        separatorBuilder: (_, _) =>
+                            const SizedBox(height: AppSpacing.sm),
+                        itemBuilder: (context, index) {
+                          final item = agendaItems[index];
+                          return _AgendaTile(
+                            item: item,
+                            onTap: () => _showAgendaDetails(context, item),
+                          );
+                        },
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.xxxl),
                   ],
@@ -308,40 +362,53 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-
-      // ── Bottom Navigation Bar (shared widget) ────────────────────
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 0),
-
-      // ── FAB ──────────────────────────────────────────────────────
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: AppColors.primary,
-        shape: const CircleBorder(),
-        elevation: 4,
-        child: const Icon(Icons.add, color: Colors.white, size: 28),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
-  Widget _avatarFallback(String name) {
-    return Container(
-      color: AppColors.primary,
-      child: Center(
-        child: Text(
-          name.isNotEmpty ? name[0] : 'S',
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
-        ),
+  void _showAgendaDetails(BuildContext context, _AgendaItem item) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       ),
+      builder: (context) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _AgendaIcon(item: item),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item.title, style: AppTextStyles.headingMedium),
+                        const SizedBox(height: 2),
+                        Text(item.subtitle, style: AppTextStyles.caption),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(item.campus, style: AppTextStyles.bodyMedium),
+              const SizedBox(height: AppSpacing.sm),
+              Text(item.details, style: AppTextStyles.bodyMedium),
+              const SizedBox(height: AppSpacing.lg),
+            ],
+          ),
+        );
+      },
     );
   }
 }
-
-// ── Featured Event Card ──────────────────────────────────────────────────────
 
 class _FeaturedEventCard extends StatelessWidget {
   final EventModel event;
@@ -361,13 +428,7 @@ class _FeaturedEventCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Background gradient
-            Container(
-              decoration: BoxDecoration(
-                gradient: AppGradients.heroBanner,
-              ),
-            ),
-            // Dark overlay for readability
+            Container(decoration: BoxDecoration(gradient: AppGradients.heroBanner)),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -380,13 +441,11 @@ class _FeaturedEventCard extends StatelessWidget {
                 ),
               ),
             ),
-            // Content
             Padding(
               padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Tag
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.sm,
@@ -404,7 +463,6 @@ class _FeaturedEventCard extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  // Title
                   Text(
                     event.title,
                     style: AppTextStyles.headingLarge.copyWith(
@@ -412,7 +470,6 @@ class _FeaturedEventCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  // Meta row
                   Row(
                     children: [
                       const Icon(
@@ -452,9 +509,114 @@ class _FeaturedEventCard extends StatelessWidget {
   }
 }
 
-// ── Opportunity Tile ─────────────────────────────────────────────────────────
+class _AgendaTile extends StatelessWidget {
+  final _AgendaItem item;
+  final VoidCallback onTap;
 
-class _OpportunityTile extends StatelessWidget {
+  const _AgendaTile({
+    required this.item,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.card),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          border: Border.all(color: AppColors.cardBorder),
+          boxShadow: AppShadows.card,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _AgendaIcon(item: item),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(item.title, style: AppTextStyles.headingSmall),
+                  const SizedBox(height: 2),
+                  Text(item.subtitle, style: AppTextStyles.caption),
+                  const SizedBox(height: 2),
+                  Text(
+                    item.campus,
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    item.details,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppColors.textMuted,
+                  size: 20,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: item.tagBg,
+                    borderRadius: BorderRadius.circular(AppRadius.chip),
+                  ),
+                  child: Text(
+                    item.tag,
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: item.tagColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AgendaIcon extends StatelessWidget {
+  const _AgendaIcon({required this.item});
+
+  final _AgendaItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        color: item.iconBg,
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+      ),
+      child: Center(child: Text(item.icon, style: const TextStyle(fontSize: 20))),
+    );
+  }
+}
+
+class _AgendaItem {
   final String icon;
   final Color iconBg;
   final String title;
@@ -463,8 +625,9 @@ class _OpportunityTile extends StatelessWidget {
   final String tag;
   final Color tagColor;
   final Color tagBg;
+  final String details;
 
-  const _OpportunityTile({
+  const _AgendaItem({
     required this.icon,
     required this.iconBg,
     required this.title,
@@ -473,82 +636,21 @@ class _OpportunityTile extends StatelessWidget {
     required this.tag,
     required this.tagColor,
     required this.tagBg,
+    required this.details,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(AppRadius.card),
-        border: Border.all(color: AppColors.cardBorder),
-        boxShadow: AppShadows.card,
-      ),
-      child: Row(
-        children: [
-          // Icon circle
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: iconBg,
-              borderRadius: BorderRadius.circular(AppRadius.sm),
-            ),
-            child: Center(child: Text(icon, style: const TextStyle(fontSize: 20))),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          // Text
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: AppTextStyles.headingSmall),
-                const SizedBox(height: 2),
-                Text(subtitle, style: AppTextStyles.caption),
-                const SizedBox(height: 2),
-                Text(
-                  campus,
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.textMuted,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          // Tag + chevron
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.textMuted,
-                size: 20,
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm,
-                  vertical: 3,
-                ),
-                decoration: BoxDecoration(
-                  color: tagBg,
-                  borderRadius: BorderRadius.circular(AppRadius.chip),
-                ),
-                child: Text(
-                  tag,
-                  style: AppTextStyles.labelSmall.copyWith(
-                    color: tagColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 10,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+  factory _AgendaItem.fromEvent(EventModel event) {
+    return _AgendaItem(
+      icon: _eventIcon(event.category),
+      iconBg: _eventIconBg(event.category),
+      title: event.title,
+      subtitle: '${_formatDate(event.startDate)} • ${_formatTime(event.startDate)}',
+      campus: event.campus,
+      tag: _eventCategoryLabel(event.category).toUpperCase(),
+      tagColor: _eventTagColor(event.category),
+      tagBg: _eventTagBg(event.category),
+      details:
+          '${event.description} Location: ${event.location}. Capacity: ${event.maxAttendees} students. Registered attendees: ${event.attendeeIds.length}. Registration deadline: ${event.metadata['registrationDeadline'] ?? 'To be announced'}.',
     );
   }
 

@@ -95,7 +95,7 @@ class _ExploreScreenState extends State<ExploreScreen>
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: allClubs.length,
-            separatorBuilder: (_, __) =>
+            separatorBuilder: (_, _) =>
                 const SizedBox(width: AppSpacing.md),
             itemBuilder: (context, index) {
               final club = allClubs[index];
