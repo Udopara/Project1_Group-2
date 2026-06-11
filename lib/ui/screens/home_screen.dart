@@ -551,4 +551,97 @@ class _OpportunityTile extends StatelessWidget {
       ),
     );
   }
+
+  factory _AgendaItem.fromClub(ClubModel club) {
+    return _AgendaItem(
+      icon: '👥',
+      iconBg: const Color(0xFFE3F2FD),
+      title: club.name,
+      subtitle: '${club.memberIds.length} members • ${club.campus}',
+      campus: club.campus,
+      tag: 'CLUB',
+      tagColor: AppColors.primary,
+      tagBg: AppColors.primaryLight,
+      details:
+          '${club.description} Current focus areas include ${(club.metadata['tags'] as List).join(', ')}. The club has hosted ${club.metadata['totalEvents']} activities and has ${club.eventIds.length} upcoming or linked agendas in the intercampus calendar.',
+    );
+  }
+}
+
+String _eventCategoryLabel(EventCategory category) => switch (category) {
+      EventCategory.academic => 'Academic',
+      EventCategory.social => 'Event',
+      EventCategory.sports => 'Sports',
+      EventCategory.tech => 'Workshop',
+      EventCategory.cultural => 'Event',
+      EventCategory.career => 'Opportunity',
+    };
+
+String _eventIcon(EventCategory category) => switch (category) {
+      EventCategory.academic => '📚',
+      EventCategory.social => '🎤',
+      EventCategory.sports => '🏆',
+      EventCategory.tech => '💻',
+      EventCategory.cultural => '🎉',
+      EventCategory.career => '💼',
+    };
+
+Color _eventIconBg(EventCategory category) => switch (category) {
+      EventCategory.academic => const Color(0xFFE3F2FD),
+      EventCategory.social => const Color(0xFFFFEBEE),
+      EventCategory.sports => const Color(0xFFE8F5E9),
+      EventCategory.tech => const Color(0xFFF3E5F5),
+      EventCategory.cultural => const Color(0xFFFFF3E0),
+      EventCategory.career => AppColors.primaryLight,
+    };
+
+Color _eventTagColor(EventCategory category) => switch (category) {
+      EventCategory.academic => AppColors.primary,
+      EventCategory.social => AppColors.error,
+      EventCategory.sports => AppColors.success,
+      EventCategory.tech => AppColors.success,
+      EventCategory.cultural => AppColors.warning,
+      EventCategory.career => AppColors.primary,
+    };
+
+Color _eventTagBg(EventCategory category) => switch (category) {
+      EventCategory.academic => AppColors.primaryLight,
+      EventCategory.social => const Color(0xFFFFEBEE),
+      EventCategory.sports => const Color(0xFFE8F5E9),
+      EventCategory.tech => const Color(0xFFE8F5E9),
+      EventCategory.cultural => const Color(0xFFFFF3E0),
+      EventCategory.career => AppColors.primaryLight,
+    };
+
+String _formatDate(DateTime date) {
+  return '${_monthName(date.month)} ${date.day}, ${date.year}';
+}
+
+String _formatTime(DateTime date) {
+  final hour = date.hour == 0
+      ? 12
+      : date.hour > 12
+          ? date.hour - 12
+          : date.hour;
+  final minute = date.minute.toString().padLeft(2, '0');
+  final period = date.hour >= 12 ? 'PM' : 'AM';
+  return '$hour:$minute $period';
+}
+
+String _monthName(int month) {
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  return months[month - 1];
 }

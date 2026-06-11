@@ -248,39 +248,25 @@ class _RegisterState extends State<Register> {
                                 horizontal: AppSpacing.xl,
                                 vertical: AppSpacing.md,
                               ),
-                              side: const BorderSide(
-                                color: AppColors.cardBorder,
-                              ),
+                              side: const BorderSide(color: AppColors.cardBorder),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  AppRadius.button,
-                                ),
+                                borderRadius: BorderRadius.circular(AppRadius.button),
                               ),
                             ),
                           ),
                           SizedBox(width: AppSpacing.lg),
                           OutlinedButton.icon(
                             onPressed: () {},
-                            icon: const Icon(
-                              Icons.school,
-                              color: AppColors.primary,
-                            ),
-                            label: Text(
-                              "Edu Portal",
-                              style: AppTextStyles.labelMedium,
-                            ),
+                            icon: const Icon(Icons.school, color: AppColors.primary),
+                            label: Text("Edu Portal", style: AppTextStyles.labelMedium),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.xl,
                                 vertical: AppSpacing.md,
                               ),
-                              side: const BorderSide(
-                                color: AppColors.cardBorder,
-                              ),
+                              side: const BorderSide(color: AppColors.cardBorder),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  AppRadius.button,
-                                ),
+                                borderRadius: BorderRadius.circular(AppRadius.button),
                               ),
                             ),
                           ),
@@ -290,10 +276,7 @@ class _RegisterState extends State<Register> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            "Don't have an account? ",
-                            style: AppTextStyles.bodyMedium,
-                          ),
+                          Text("Don't have an account? ", style: AppTextStyles.bodyMedium),
                           GestureDetector(
                             onTap: () {},
                             child: Text(

@@ -29,8 +29,7 @@ class PostDetailsScreen extends StatelessWidget {
         .whereType<UserModel>()
         .toList();
     final extraCount = (event.attendeeIds.length - 3).clamp(0, 999);
-    final tags =
-        ((event.metadata['tags'] as List?)?.cast<String>()) ?? <String>[];
+    final tags = ((event.metadata['tags'] as List?)?.cast<String>()) ?? <String>[];
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
@@ -59,15 +58,8 @@ class PostDetailsScreen extends StatelessWidget {
                       runSpacing: AppSpacing.sm,
                       children: [
                         _TagChip(
-                          label: _categoryLabel(event.category),
-                          index: 0,
-                        ),
-                        ...tags
-                            .take(2)
-                            .toList()
-                            .asMap()
-                            .entries
-                            .map(
+                            label: _categoryLabel(event.category), index: 0),
+                        ...tags.take(2).toList().asMap().entries.map(
                               (e) => _TagChip(label: e.value, index: e.key + 1),
                             ),
                       ],
@@ -134,28 +126,18 @@ class PostDetailsScreen extends StatelessWidget {
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 String _categoryLabel(EventCategory cat) => switch (cat) {
-  EventCategory.academic => 'Academic',
-  EventCategory.social => 'Social',
-  EventCategory.sports => 'Sports',
-  EventCategory.tech => 'Workshop',
-  EventCategory.cultural => 'Cultural',
-  EventCategory.career => 'Career',
-};
+      EventCategory.academic => 'Academic',
+      EventCategory.social => 'Social',
+      EventCategory.sports => 'Sports',
+      EventCategory.tech => 'Workshop',
+      EventCategory.cultural => 'Cultural',
+      EventCategory.career => 'Career',
+    };
 
 String _formatDate(DateTime dt) {
   const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
   ];
   return '${months[dt.month - 1]} ${dt.day}, ${dt.year}';
 }
@@ -188,11 +170,8 @@ class _HeroSection extends StatelessWidget {
             fit: BoxFit.cover,
             errorBuilder: (ctx, err, st) => Container(
               color: AppColors.primaryLight,
-              child: const Icon(
-                Icons.image_outlined,
-                color: AppColors.primary,
-                size: 48,
-              ),
+              child: const Icon(Icons.image_outlined,
+                  color: AppColors.primary, size: 48),
             ),
           ),
           // Bottom fade overlay

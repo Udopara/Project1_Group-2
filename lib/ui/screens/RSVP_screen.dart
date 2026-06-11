@@ -38,9 +38,7 @@ class _RSVPState extends State<RSVP> {
               child: Session.currentUser?.avatarUrl == null
                   ? Text(
                       Session.currentUser?.fullName.substring(0, 1) ?? 'A',
-                      style: AppTextStyles.labelMedium.copyWith(
-                        color: AppColors.primary,
-                      ),
+                      style: AppTextStyles.labelMedium.copyWith(color: AppColors.primary),
                     )
                   : null,
             ),
@@ -109,8 +107,7 @@ class _RSVPState extends State<RSVP> {
                       vertical: AppSpacing.sm,
                     ),
                     itemCount: events.length,
-                    separatorBuilder: (_, _) =>
-                        const SizedBox(height: AppSpacing.lg),
+                    separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.lg),
                     itemBuilder: (_, index) => _EventCard(event: events[index]),
                   ),
           ),
@@ -157,11 +154,7 @@ class _TabBar extends StatelessWidget {
 }
 
 class _TabItem extends StatelessWidget {
-  const _TabItem({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
+  const _TabItem({required this.label, required this.selected, required this.onTap});
 
   final String label;
   final bool selected;
@@ -200,18 +193,8 @@ class _EventCard extends StatelessWidget {
 
   String _formatDate(DateTime dt) {
     const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
     ];
     final hour = dt.hour > 12 ? dt.hour - 12 : (dt.hour == 0 ? 12 : dt.hour);
     final minute = dt.minute.toString().padLeft(2, '0');

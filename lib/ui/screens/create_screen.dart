@@ -210,3 +210,12 @@ class _CreateScreenState extends State<CreateScreen> {
     );
   }
 }
+
+String _categoryLabel(EventCategory category) => switch (category) {
+      EventCategory.academic => 'Academic',
+      EventCategory.social => 'Social',
+      EventCategory.sports => 'Sports',
+      EventCategory.tech => 'Workshop',
+      EventCategory.cultural => 'Cultural',
+      EventCategory.career => 'Career',
+    };
