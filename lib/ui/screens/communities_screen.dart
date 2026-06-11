@@ -83,9 +83,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen>
     super.dispose();
   }
 
-  // ─────────────────────────────────────────────
-  // FULL FILTER ENGINE (TAB + SEARCH)
-  // ─────────────────────────────────────────────
+
   List<Map<String, dynamic>> get filteredCommunities {
     List<Map<String, dynamic>> data = communities;
 
@@ -225,9 +223,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen>
   }
 }
 
-// ─────────────────────────────────────────────
-// EMPTY STATE (UX UPGRADE)
-// ─────────────────────────────────────────────
+
 class EmptyState extends StatelessWidget {
   const EmptyState({super.key});
 
@@ -256,9 +252,7 @@ class EmptyState extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────
-// COMMUNITY CARD (UNCHANGED UI, CLEAN LOGIC)
-// ─────────────────────────────────────────────
+
 class CommunityCard extends StatelessWidget {
   final String name;
   final int members;
