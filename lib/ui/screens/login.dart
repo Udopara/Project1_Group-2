@@ -38,22 +38,12 @@ class _RegisterState extends State<Register> {
         elevation: 0,
         title: Row(
           children: [
-            Container(
+            SizedBox(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(AppRadius.sm),
-              ),
-              child: const Center(
-                child: Text(
-                  "A",
-                  style: TextStyle(
-                    color: AppColors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              child: Image.asset(
+                'assets/images/alu_logo.webp',
+                fit: BoxFit.contain,
               ),
             ),
             SizedBox(width: AppSpacing.md),

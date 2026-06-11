@@ -229,7 +229,7 @@ class _ChatAppBar extends StatelessWidget {
                           ? Image.network(
                               avatarUrl!,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) =>
+                              errorBuilder: (_, _, _) =>
                                   _initials(avatarInitial),
                             )
                           : _initials(avatarInitial),
@@ -420,7 +420,7 @@ class _MessageBubble extends StatelessWidget {
                         width: 220,
                         height: 150,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
+                        errorBuilder: (_, _, _) => Container(
                           width: 220,
                           height: 150,
                           color: AppColors.primaryLight,
