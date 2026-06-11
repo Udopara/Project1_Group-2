@@ -107,6 +107,8 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   _menuItem(context, Icons.chat_bubble_outline_rounded, 'My Posts', () {}),
                   _divider(),
+                  _menuItem(context, Icons.event_available_outlined, 'My RSVPs', () => Navigator.pushNamed(context, '/rsvp')),
+                  _divider(),
                   _menuItem(context, Icons.bookmark_outline_rounded, 'Saved', () {}),
                   _divider(),
                   _menuItem(context, Icons.notifications_outlined, 'Notifications', () {}),

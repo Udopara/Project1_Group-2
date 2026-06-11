@@ -6,8 +6,30 @@ import 'package:formative_assignment1/data/session.dart';
 import 'package:formative_assignment1/theme/app_theme.dart';
 import 'package:formative_assignment1/ui/widgets/app_bottom_nav_bar.dart';
 
-class ChatsScreen extends StatelessWidget {
+class ChatsScreen extends StatefulWidget {
   const ChatsScreen({super.key});
+
+  @override
+  State<ChatsScreen> createState() => _ChatsScreenState();
+}
+
+class _ChatsScreenState extends State<ChatsScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _query = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      setState(() => _query = _searchController.text.toLowerCase());
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +37,23 @@ class ChatsScreen extends StatelessWidget {
     final activeUsers = DummyDatabase.users
         .where((u) => u.isOnline && u.id != me.id)
         .toList();
-    final threads = DummyDatabase.chatThreads;
+
+    // Only threads the current user belongs to
+    final myThreads = DummyDatabase.chatThreads
+        .where((t) => t.participantIds.contains(me.id))
+        .toList();
+
+    // Filter by search query against the other participant's name
+    final threads = _query.isEmpty
+        ? myThreads
+        : myThreads.where((t) {
+            final otherId = t.participantIds.firstWhere(
+              (id) => id != me.id,
+              orElse: () => '',
+            );
+            final other = DummyDatabase.getUserById(otherId);
+            return other?.fullName.toLowerCase().contains(_query) ?? false;
+          }).toList();
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
@@ -69,6 +107,7 @@ class ChatsScreen extends StatelessWidget {
                     boxShadow: AppShadows.card,
                   ),
                   child: TextField(
+                    controller: _searchController,
                     decoration: InputDecoration(
                       hintText: 'Search conversations...',
                       prefixIcon: const Icon(
@@ -166,10 +205,11 @@ class ChatsScreen extends StatelessWidget {
                   final lastMsg = thread.messages.isNotEmpty
                       ? thread.messages.last
                       : null;
-                  final hasUnread =
-                      lastMsg != null &&
-                      lastMsg.status != MessageStatus.read &&
-                      lastMsg.receiverId == me.id;
+                  final unreadCount = thread.messages
+                      .where((m) =>
+                          m.receiverId == me.id &&
+                          m.status != MessageStatus.read)
+                      .length;
                   return Padding(
                     padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                     child: GestureDetector(
@@ -183,7 +223,7 @@ class ChatsScreen extends StatelessWidget {
                         name: other.fullName,
                         preview: lastMsg?.content ?? '',
                         time: lastMsg != null ? _formatTime(lastMsg.sentAt) : '',
-                        unreadCount: hasUnread ? 1 : 0,
+                        unreadCount: unreadCount,
                         isGroup: false,
                       ),
                     ),
@@ -200,8 +240,10 @@ class ChatsScreen extends StatelessWidget {
   String _formatTime(DateTime dt) {
     final now = DateTime.now();
     if (dt.year == now.year && dt.month == now.month && dt.day == now.day) {
-      return '${dt.hour.toString().padLeft(2, '0')}:'
-          '${dt.minute.toString().padLeft(2, '0')}';
+      final period = dt.hour >= 12 ? 'PM' : 'AM';
+      final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
+      final m = dt.minute.toString().padLeft(2, '0');
+      return '$h:$m $period';
     }
     return '${dt.day}/${dt.month}';
   }

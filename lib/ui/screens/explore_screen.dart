@@ -124,11 +124,9 @@ class _ExploreScreenState extends State<ExploreScreen>
   }
 
   Widget _clubsView() {
-    final list = _tabController.index == 3 ? myClubs : allClubs;
-
     return Column(
       children: [
-        ...list.map(_clubListTile),
+        ...allClubs.map(_clubListTile),
 
         const SizedBox(height: AppSpacing.lg),
 
@@ -160,13 +158,13 @@ class _ExploreScreenState extends State<ExploreScreen>
         boxShadow: AppShadows.card,
       ),
       child: ListTile(
-        // ✅ FIX for ListTile ink warning
         tileColor: AppColors.white,
         contentPadding: const EdgeInsets.all(AppSpacing.md),
         leading: const Icon(Icons.event, color: AppColors.primary),
         title: Text(event.title),
         subtitle: Text(event.location),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        onTap: () => Navigator.pushNamed(context, '/post-details', arguments: event.id),
       ),
     );
   }

@@ -16,12 +16,7 @@ class _CreateScreenState extends State<CreateScreen> {
   final TextEditingController _descriptionController = TextEditingController();
 
   String _selectedCategory = 'Event';
-  final List<String> _categories = [
-    'Event',
-    'Housing',
-    'Peer Support',
-    'Opportunity',
-  ];
+  final List<String> _categories = ['Event', 'Opportunity'];
 
   @override
   void dispose() {
